@@ -20,13 +20,13 @@ SELECT * FROM Books WHERE bookID = :bookID;
 SELECT * FROM Users
 WHERE userID = :customerID;
 
--- Get user book info by UserBooks ID
+-- Get a specific user's book info by UserBooks ID
 -- Dynamic inputs: (:UserBookID)
 SELECT UserBooks.*, Users.userName, Users.email FROM UserBooks
 JOIN Users ON UserBooks.userID = Users.userID
 WHERE UserBooks.userBookID = :UserBookID;
 
--- Get all books in a user's library
+-- Get all books in a user library
 -- Dynamic inputs: (:userBookID)
 SELECT Books.*, UserBooks.userBookStatus, UserBooks.userBookRating FROM UserBooks
 JOIN Books ON UserBooks.bookID = Books.bookID
@@ -40,8 +40,14 @@ WHERE AuthorsofBooks.authorID = :authorID;
 
 -- Get all books of a genre
 -- Dynamic inputs: (:genreID)
-SELECT Books.* FROM Books
-JOIN GenresofBooks ON Books.bookID = GenresofBooks.bookID
+
+-- SELECT Books.* FROM Books
+-- JOIN GenresofBooks ON Books.bookID = GenresofBooks.bookID
+-- WHERE GenresofBooks.genreID = :genreID;
+
+SELECT Books.bookID, Books.bookTitle, Genres.genreName FROM Books
+JOIN GenresofBooks ON Books.bookID = GenresofBooks.bookIDs
+JOIN Genres ON GenresofBooks.genreID = Genres.genreID
 WHERE GenresofBooks.genreID = :genreID;
 
 -- INSERT queries
