@@ -22,7 +22,7 @@ WHERE userID = :customerID;
 
 -- Get user book info by UserBooks ID
 -- Dynamic inputs: (:UserBookID)
-SELECT UserBooks.*, Users.* FROM UserBooks
+SELECT UserBooks.*, Users.userName, Users.email FROM UserBooks
 JOIN Users ON UserBooks.userID = Users.userID
 WHERE UserBooks.userBookID = :UserBookID;
 
