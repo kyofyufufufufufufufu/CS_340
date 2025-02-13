@@ -1,12 +1,7 @@
 
 --------------- Users ---------------
 -- Read - Get all users
-SELECT * FROM Users;
-
--- Read - Get user info by ID
--- Dynamic inputs: (:userID)
-SELECT * FROM Users
-WHERE userID = :customerID;
+SELECT userID, userName, password, email FROM Users;
 
 -- Create - Add a new user
 -- Dynamic inputs: (:userName, :password, :email)
@@ -14,7 +9,7 @@ INSERT INTO Users (userName, password, email)
 VALUES (:userName, :password, :email);
 
 -- Update user details
--- Dynamic inputs: (:name, :email, :userID)
+-- Dynamic inputs: (:userName, :password, :email)
 UPDATE Users
 SET userName = :userName, password = :password, email = :email
 WHERE userID = :userID;
@@ -26,11 +21,7 @@ DELETE FROM Users WHERE userID = :userID;
 --------------- Books ---------------
 
 -- Read - Get all books
-SELECT * FROM Books;
-
--- Read - Get a specific book by ID
--- Dynamic inputs: (:bookID)
-SELECT * FROM Books WHERE bookID = :bookID;
+SELECT bookID, bookTitle, bookDescription, bookPublishDate FROM Books;
 
 -- Create - Add a new book
 -- Dynamic inputs: (:title, :author, :genre)
@@ -47,73 +38,120 @@ WHERE bookID = :bookID;
 -- Dynamic inputs: (:bookID)
 DELETE FROM Books WHERE bookID = :bookID;
 
-
 --------------- UserBooks ---------------
 
 -- Read - Get all books from all users
-SELECT * FROM UserBooks;
+SELECT userBookID, userID, bookID, userBookStatus, userBookRating FROM UserBooks;
 
--- Get a specific user's book info by UserBooks ID
--- Dynamic inputs: (:UserBookID)
-SELECT UserBooks.*, Users.userName, Users.email FROM UserBooks
-JOIN Users ON UserBooks.userID = Users.userID
-WHERE UserBooks.userBookID = :UserBookID;
+-- Create - Add a book to a user's library.
+-- Dynamic inputs: (:userID, :bookID, :rating, :status)
+INSERT INTO UserBooks (userID, bookID, userBookRating, userBookStatus)
+VALUES (:userID, :bookID, :rating, :status);
 
--- Get all books in a user library
+-- Update UserBook entry
+-- Dynamic inputs: (:userID, :bookID, :rating, :status)
+UPDATE UserBooks
+SET userID = :userID, bookID = :bookID, userBookRating = :rating, userBookStatus = :status
+WHERE userBookID = :userBookID;
+
+-- Delete an entry in UserBooks
 -- Dynamic inputs: (:userBookID)
-SELECT Books.*, UserBooks.userBookStatus, UserBooks.userBookRating FROM UserBooks
-JOIN Books ON UserBooks.bookID = Books.bookID
-WHERE UserBooks.userBookID = :UserBookID;
-
+DELETE FROM UserBooks WHERE userBookID = :userBookID;
 
 --------------- Authors ---------------
 -- Read - Get all authors
-SELECT * FROM Authors;
+SELECT authorID, authorName FROM Authors;
 
 -- Create - Add a new Author
--- Dynamic inputs: (authorName)
+-- Dynamic inputs: (:authorName)
 INSERT INTO Authors (authorName)
 VALUES (:authorName);
 
+-- Update - Edit an author entry
+-- Dynamic inputs: (:authorName)
+UPDATE Authors
+SET authorName = :authorName
+WHERE authorID = :authorID;
+
 -- Delete - Delete an Author.
+-- Dynamic inputs: (:authorID)
 DELETE FROM Authors WHERE authorID = :authorID;
 
 --------------- Genres ---------------
--- Get all genres
-SELECT * FROM Genres;
+-- Read - Get all genres
+SELECT genreID, genreName FROM Genres;
 
 
+-- Create - Add a new Genre
+-- Dynamic inputs: (:genreName)
 INSERT INTO Genres (genreName)
 VALUES (:genreName);
 
+-- Update - Edit genre entry
+-- Dynamic inputs: (:genreName)
+UPDATE Genres
+SET genreName = :genreName
+WHERE genreID = :genreID;
 
-DELETE FROM Genres WHERE genreID = :genreID;
-
-
---------------- GenresofBooks ---------------
-SELECT * FROM GenresofBooks;
-
--- Get all books of a genre
+-- Delete - Delete a genre.
 -- Dynamic inputs: (:genreID)
-
--- SELECT Books.* FROM Books
--- JOIN GenresofBooks ON Books.bookID = GenresofBooks.bookID
--- WHERE GenresofBooks.genreID = :genreID;
-
-SELECT Books.bookID, Books.bookTitle, Genres.genreName FROM Books
-JOIN GenresofBooks ON Books.bookID = GenresofBooks.bookID
-JOIN Genres ON GenresofBooks.genreID = Genres.genreID
-WHERE GenresofBooks.genreID = :genreID;
-
+DELETE FROM Genres WHERE genreID = :genreID;
 
 ---------------- AuthorsofBooks ---------------
 
-SELECT * FROM AuthorsofBooks;
+-- Read - Get books from authors.
+SELECT authorBookID, 
+    (SELECT authorName FROM Authors WHERE authorID = AuthorsofBooks.authorID) AS authorFullName,
+    (SELECT bookTitle FROM Books WHERE bookID = AuthorsofBooks.bookID) AS bookName
+FROM AuthorsofBooks;
 
--- Read - Get all books by an author
--- Dynamic inputs: (:authorID)  
-SELECT Books.* FROM Books
-JOIN AuthorsofBooks ON Books.bookID = AuthorsofBooks.bookID
-WHERE AuthorsofBooks.authorID = :authorID;
+
+-- Create - Assign a book to an author.
+-- Dynamic inputs: (:authorName, :bookTitle)
+INSERT INTO AuthorsofBooks (authorID, bookID)
+VALUES (
+    (SELECT authorID FROM Authors WHERE authorName = :authorName),
+    (SELECT bookID FROM Books WHERE bookTitle = :bookTitle)
+);
+
+-- Update - Edit authors of books entry.
+-- Dynamic inputs: (:authorName, :bookTitle)
+UPDATE AuthorsofBooks
+SET authorID = (SELECT authorID FROM Authors WHERE authorName = :authorName),
+    bookID =  (SELECT bookID FROM Books WHERE bookTitle = :bookTitle)
+WHERE authorBookID = :authorBookID;
+
+-- Delete authors of books entry.
+-- Dynamic inputs: (:authorBookID)
+DELETE FROM AuthorsofBooks WHERE authorBookID = :authorBookID;
+
+--------------- GenresofBooks ---------------
+
+-- Read- Get books of all genres
+SELECT genreBookID, 
+    (SELECT genreName FROM Genres WHERE genreID = GenresofBooks.genreID) AS nameOfGenre,
+    (SELECT bookTitle FROM Books WHERE bookID = GenresofBooks.bookID) AS bookName
+FROM GenresofBooks;
+
+-- Create - Add a book to a genre.
+-- Dynamic inputs: (:genreName)
+INSERT INTO GenresofBooks (genreID, bookID)
+VALUES (
+    (SELECT genreID FROM Genres WHERE genreName = :genreName),
+    (SELECT bookID FROM Books WHERE bookTitle = :bookTitle)
+);
+
+-- Update - Edit genre of book entry.
+-- Dynamic inputs: (:genreName, :bookTitle)
+UPDATE GenresofBooks
+SET genreID = (SELECT genreID FROM Genres WHERE genreName = :genreName),
+    bookID =  (SELECT bookID FROM Books WHERE bookTitle = :bookTitle)
+WHERE genreBookID = :genreBookID;
+
+-- Delete genre of book entry.
+-- Dynamic inputs: (:genreBookID)
+DELETE FROM GenresofBooks WHERE genreBookID = :genreBookID;
+
+
 
 
