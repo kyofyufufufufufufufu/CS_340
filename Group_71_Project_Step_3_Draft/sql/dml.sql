@@ -1,6 +1,32 @@
 -- SELECT queries
--- Get all users
+
+--------------- Users ---------------
+-- Read - Get all users
 SELECT * FROM Users;
+
+-- Read - Get user info by ID
+-- Dynamic inputs: (:userID)
+SELECT * FROM Users
+WHERE userID = :customerID;
+
+-- Create - Add a new user
+-- Dynamic inputs: (:userName, :password, :email)
+INSERT INTO Users (userName, password, email)
+VALUES (:userName, :password, :email);
+
+
+-- Update user details
+-- Dynamic inputs: (:name, :email, :userID)
+UPDATE Users
+SET userName = :userName, password = :password, email = :email
+WHERE userID = :userID;
+
+
+-- Delete a user
+-- Dynamic inputs: (:userID)
+DELETE FROM Users WHERE userID = :userID;
+
+--------------- Books ---------------
 
 -- Get all books
 SELECT * FROM Books;
@@ -15,10 +41,6 @@ SELECT * FROM Genres;
 -- Dynamic inputs: (:bookID)
 SELECT * FROM Books WHERE bookID = :bookID;
 
--- Get user info by ID
--- Dynamic inputs: (:userID)
-SELECT * FROM Users
-WHERE userID = :customerID;
 
 -- Get a specific user's book info by UserBooks ID
 -- Dynamic inputs: (:UserBookID)
@@ -56,10 +78,7 @@ WHERE GenresofBooks.genreID = :genreID;
 INSERT INTO Books (bookTitle, bookDescription, bookPublishDate)
 VALUES (:title, :description, :publishdate);
 
--- Add a new user
--- Dynamic inputs: (:userName, :password, :email)
-INSERT INTO Users (userName, password, email)
-VALUES (:userName, :password, :email);
+
 
 -- UPDATE queries
 -- Update book details
@@ -69,17 +88,8 @@ SET bookTitle = :bookTitle, bookDescription = :bookDescription, bookPublishDate 
 WHERE bookID = :bookID;
 
 
--- Update user details
--- Dynamic inputs: (:name, :email, :userID)
-UPDATE Users
-SET userName = :userName, password = :password, email = :email
-WHERE userID = :userID;
-
 -- DELETE queries
 -- Delete a book
 -- Dynamic inputs: (:bookID)
 DELETE FROM Books WHERE bookID = :bookID;
 
--- Delete a user
--- Dynamic inputs: (:userID)
-DELETE FROM Users WHERE userID = :userID;
