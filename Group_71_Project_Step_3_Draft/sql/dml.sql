@@ -41,17 +41,27 @@ DELETE FROM Books WHERE bookID = :bookID;
 --------------- UserBooks ---------------
 
 -- Read - Get all books from all users
-SELECT userBookID, userID, bookID, userBookStatus, userBookRating FROM UserBooks;
+SELECT userBookID, 
+    (SELECT userID FROM Users WHERE userID = UserBooks.userID) AS userName, 
+    (SELECT bookID FROM Books WHERE bookID = Books.bookID) AS bookName, 
+    userBookStatus,
+    userBookRating
+FROM UserBooks;
 
 -- Create - Add a book to a user's library.
 -- Dynamic inputs: (:userID, :bookID, :rating, :status)
 INSERT INTO UserBooks (userID, bookID, userBookRating, userBookStatus)
-VALUES (:userID, :bookID, :rating, :status);
+VALUES (
+    (SELECT userID FROM Users WHERE userID = :userID),
+    (SELECT bookID FROM Books WHERE bookID = :bookID),
+    :rating, :status);
 
 -- Update UserBook entry
 -- Dynamic inputs: (:userID, :bookID, :rating, :status)
 UPDATE UserBooks
-SET userID = :userID, bookID = :bookID, userBookRating = :rating, userBookStatus = :status
+SET userID = (SELECT userID FROM Users WHERE userID = UserBooks.userID), 
+    bookID = (SELECT bookID FROM Books WHERE bookID = Books.bookID), 
+    userBookRating = :rating, userBookStatus = :status
 WHERE userBookID = :userBookID;
 
 -- Delete an entry in UserBooks
