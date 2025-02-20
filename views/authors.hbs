@@ -1,0 +1,32 @@
+<h1>{{title}}</h1>
+
+<!-- Author Entry Form -->
+<form action="/add-author" method="POST">
+    <label for="authorName">Full name:</label>
+    <input type="text" id="authorName" name="authorName" required>
+
+    <button type="submit">Add Author</button>
+</form>
+
+<hr>
+
+<!-- Authors Table -->
+<h2>Authors List</h2>
+<table>
+  <thead>
+    <tr>
+      <th><input type="checkbox" id="select-all" /></th>
+      <th>ID</th>
+      <th>Full Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each authors}}
+    <tr>
+      <td><input type="checkbox" class="select-row" /></td>
+      <td>{{authorID}}</td>
+      <td>{{authorName}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

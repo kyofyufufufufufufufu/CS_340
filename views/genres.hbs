@@ -1,0 +1,32 @@
+<h1>{{title}}</h1>
+
+<!-- Author Entry Form -->
+<form action="/add-genre" method="POST">
+    <label for="genreName">Full name:</label>
+    <input type="text" id="genreName" name="genreName" required>
+
+    <button type="submit">Add Genre</button>
+</form>
+
+<hr>
+
+<!-- Genres Table -->
+<h2>Genres List</h2>
+<table>
+  <thead>
+    <tr>
+      <th><input type="checkbox" id="select-all" /></th>
+      <th>ID</th>
+      <th>Genre Category</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each genres}}
+    <tr>
+      <td><input type="checkbox" class="select-row" /></td>
+      <td>{{genreID}}</td>
+      <td>{{genreName}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

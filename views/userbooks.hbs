@@ -1,0 +1,60 @@
+<h1>User Book Tracking</h1>
+
+<form action="/add-userbook" method="POST">
+    <label for="user">User:</label>
+    <select id="user" name="userID">
+        {{#each users}}
+            <option value="{{userID}}">{{userName}}</option>
+        {{/each}}
+    </select>
+
+    <label for="book">Book:</label>
+    <select id="book" name="bookID">
+        {{#each books}}
+            <option value="{{bookID}}">{{bookTitle}}</option>
+        {{/each}}
+    </select>
+
+    <label for="status">Status:</label>
+    <select id="status" name="userBookStatus">
+        <option value="wishlist">Wishlist</option>
+        <option value="read">Read</option>
+        <option value="dropped">Dropped</option>
+    </select>
+
+    <label for="rating">Rating:</label>
+    <select id="rating" name="userBookRating">
+        <option value="">No Rating</option>
+        {{#each [1,2,3,4,5]}}
+            <option value="{{this}}">{{this}} Stars</option>
+        {{/each}}
+    </select>
+
+    <button type="submit">Add User Book</button>
+</form>
+
+<hr>
+
+<h2>User Book List</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Book</th>
+      <th>Status</th>
+      <th>Rating</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each userbooks}}
+    <tr>
+      <td>{{userBookID}}</td>
+      <td>{{userName}}</td>
+      <td>{{bookTitle}}</td>
+      <td>{{userBookStatus}}</td>
+      <td>{{#if userBookRating}}{{userBookRating}} Stars{{else}}N/A{{/if}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

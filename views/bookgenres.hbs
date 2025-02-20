@@ -1,0 +1,41 @@
+<h1>Assign Genres to Books</h1>
+
+<form action="/add-genrebook" method="POST">
+    <label for="book">Book:</label>
+    <select id="book" name="bookID">
+        {{#each books}}
+            <option value="{{bookID}}">{{bookTitle}}</option>
+        {{/each}}
+    </select>
+
+    <label for="genre">Genre:</label>
+    <select id="genre" name="genreID">
+        {{#each genres}}
+            <option value="{{genreID}}">{{genreName}}</option>
+        {{/each}}
+    </select>
+
+    <button type="submit">Assign Genre</button>
+</form>
+
+<hr>
+
+<h2>Book Genres List</h2>
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Book</th>
+      <th>Genre</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each genrebooks}}
+    <tr>
+      <td>{{genreBookID}}</td>
+      <td>{{bookTitle}}</td>
+      <td>{{genreName}}</td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

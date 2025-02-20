@@ -1,106 +1,139 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
 
-const PORT = process.env.PORT || 6371;
-
-/* Database connection
-const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root', // or your database username
-    password: 'yourpassword', // your database password
-    database: 'book_tracking_system' // replace with your actual database name
-});
-
-Connect to the database
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err.stack);
-        return;
-    }
-    console.log('Connected to the database.');
-});
-*/
+const PORT = process.env.PORT || 5671;
 
 // Create an Express app
 const app = express();
 
-// Register custom helper for equality comparison
+// Middleware for static files (Move this after app initialization)
+app.use(express.static('public'));
+
+// Page data
+const pages = [
+	{
+		title: 'Home',
+		url: '/'
+	},
+	{
+		title: 'Users',
+		url: '/users'
+	},
+	{
+		title: 'UserBooks',
+		url: '/userbooks'
+	},
+	{
+		title: 'Books',
+		url: '/books'
+	},
+    {
+		title: 'Authors',
+		url: '/authors'
+	},
+	{
+		title: 'BookGenres',
+		url: '/bookgenres'
+	},
+	{
+		title: 'Genres',
+		url: '/genres'
+	}
+];
+
+const books = [
+    { bookID: 1, bookTitle: "Leviathan Wakes" },
+    { bookID: 2, bookTitle: "The God of the Woods" },
+    { bookID: 3, bookTitle: "A Game of Thrones" },
+    { bookID: 4, bookTitle: "The House in the Cerulean Sea" },
+    { bookID: 5, bookTitle: "Caliban’s War" }
+];
+
+const genres = [
+    { genreID: 1, genreName: "Science Fiction" },
+    { genreID: 2, genreName: "Fantasy" },
+    { genreID: 3, genreName: "Mystery & Thriller" }
+];
+
+const authors = [
+    { authorID: 1, authorName: "James S.A. Corey" },
+    { authorID: 2, authorName: "Liz Moore" },
+    { authorID: 3, authorName: "George R.R. Martin" },
+    { authorID: 4, authorName: "T.J. Klune" }
+];
+
+const users = [
+    { userID: 1, userName: "lights" },
+    { userID: 2, userName: "test1" },
+    { userID: 3, userName: "booklover" }
+];
+
+const userbooks = [
+    { userBookID: 1, userName: "lights", bookTitle: "Leviathan Wakes", userBookStatus: "read", userBookRating: 5 },
+    { userBookID: 2, userName: "test1", bookTitle: "The God of the Woods", userBookStatus: "wishlist", userBookRating: null },
+    { userBookID: 3, userName: "booklover", bookTitle: "The God of the Woods", userBookStatus: "dropped", userBookRating: 1 },
+    { userBookID: 4, userName: "test1", bookTitle: "A Game of Thrones", userBookStatus: "wishlist", userBookRating: null },
+    { userBookID: 5, userName: "lights", bookTitle: "Caliban’s War", userBookStatus: "read", userBookRating: 3 }
+];
+
+const bookgenres = [
+    { genreBookID: 1, bookTitle: "Leviathan Wakes", genreName: "Science Fiction" },
+    { genreBookID: 2, bookTitle: "The God of the Woods", genreName: "Mystery & Thriller" },
+    { genreBookID: 3, bookTitle: "A Game of Thrones", genreName: "Fantasy" },
+    { genreBookID: 4, bookTitle: "The House in the Cerulean Sea", genreName: "Fantasy" },
+    { genreBookID: 5, bookTitle: "Caliban’s War", genreName: "Science Fiction" }
+];
+
+// Register custom Handlebars helpers
 const hbs = exphbs.create({});
 hbs.handlebars.registerHelper('isEqual', function (a, b, options) {
-    return a === b ? options.fn(this) : options.inverse(this);
+	if (!options || !options.fn) return ''; 
+	return a === b ? options.fn(this) : options.inverse(this);
 });
 
 hbs.handlebars.registerHelper('isNotEqual', function (a, b, options) {
-    return a !== b ? options.fn(this) : options.inverse(this);
+	if (!options || !options.fn) return ''; 
+	return a !== b ? options.fn(this) : options.inverse(this);
 });
 
-// Configure express-handlebars
+// Configure Handlebars
 app.engine('hbs', exphbs.engine({extname: '.hbs'}));
 app.set('view engine', 'hbs');
 
+// Middleware
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
-// Pages array similar to your original
-const pages = [
-    { title: 'Home', url: '/' },
-    { title: 'Users', url: '/users', columns: ['userName', 'email'] },
-    { title: 'Books', url: '/books', columns: ['bookTitle', 'bookDescription'] },
-    { title: 'Authors', url: '/authors', columns: ['authorName'] },
-    { title: 'Genres', url: '/genres', columns: ['genreName'] }
-];
-
-// Route to Home
 app.get('/', (req, res) => {
-    res.render('home', { title: 'Home', pages });
+    res.render('home', { pages });
 });
 
-// Route to Users page
-app.get('/users', (req, res) => {
-    db.query('SELECT * FROM Users', (err, users) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send('Error fetching users.');
-        }
-        res.render('users', { title: 'Users', users, pages });
-    });
+app.get(['/bookgenres'], (req, res) => {
+    res.render('bookgenres', { books, genres, bookgenres, pages });
 });
 
-// Route to Books page
-app.get('/books', (req, res) => {
-    db.query('SELECT * FROM Books', (err, books) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send('Error fetching books.');
-        }
-        res.render('books', { title: 'Books', books, pages });
-    });
+app.get(['/userbooks'], (req, res) => {
+    res.render('userbooks', { users, books, userbooks, pages });
 });
 
-// Route to Authors page
-app.get('/authors', (req, res) => {
-    db.query('SELECT * FROM Authors', (err, authors) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send('Error fetching authors.');
-        }
-        res.render('authors', { title: 'Authors', authors, pages });
-    });
+app.get(['/authors'], (req, res) => {
+    res.render('authors', { authors, pages });
 });
 
-// Route to Genres page
-app.get('/genres', (req, res) => {
-    db.query('SELECT * FROM Genres', (err, genres) => {
-        if (err) {
-            console.log(err);
-            return res.status(500).send('Error fetching genres.');
-        }
-        res.render('genres', { title: 'Genres', genres, pages });
-    });
+app.get(['/genres'], (req, res) => {
+    res.render('genres', { genres, pages });
 });
 
-// Start the server
-app.listen(PORT, (err) => {
-    if (err) throw err;
-    console.log(`Server running on port ${PORT}`);
+app.get(['/users'], (req, res) => {
+    res.render('users', { users, pages });
+});
+
+app.get(['/books'], (req, res) => {
+    res.render('books', { books, pages });
+});
+
+// Start Server
+app.listen(PORT, function (err) {
+	if(err) throw err;
+    console.log(`Server running on http://classwork.engr.oregonstate.edu:${PORT}/index.html`);
 });
