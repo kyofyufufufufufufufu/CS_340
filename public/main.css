@@ -1,4 +1,3 @@
-/* Root Variables */
 :root {
     --accent: #737239;
     --lGray: #fafafa;
@@ -7,18 +6,18 @@
     --sPad: 15px;
     --mPad: 30px;
     --bPad: 90px;
-    --header-bg: #ffffff; /* Optional: Add background color for header */
+    --header-bg: #ffffff;
     --nav-link-color: #007bff;
     --nav-link-hover-color: #0056b3;
 }
 
 body {
-    display: flex; /* Change from grid to flex */
-    flex-direction: column; /* Stack content vertically */
-    align-items: center; /* Center align everything */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    margin: var(--bPad) auto 0; /* Auto centers horizontally */
-    max-width: 800px; /* Optional: Adjust width for better readability */
+    margin: var(--bPad) auto 0;
+    max-width: 800px;
     background-color: var(--lGray);
     font-family: Arial, Helvetica, sans-serif;
     color: var(--dGray);
@@ -26,8 +25,8 @@ body {
 
 header {
     width: 100%;
-    max-width: 800px; /* Matches body max-width */
-    margin: 0 auto; /* Centers it */
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 header h1 {
@@ -50,10 +49,10 @@ nav a:hover {
 
 .content {
     width: 100%;
-    max-width: 800px; /* Keep consistent width */
+    max-width: 800px;
     margin: 20px auto;
     padding: var(--sPad);
-    background: white; /* Optional: Adds contrast */
+    background: white;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -72,7 +71,6 @@ nav a:hover {
     line-height: 1.6;
 }
 
-/* Page Descriptions */
 .content h3 {
     margin-bottom: 5px;
     font-weight: bold;
@@ -82,7 +80,6 @@ nav a:hover {
     margin-bottom: 20px;
 }
 
-/* Button Styling */
 .expand-btn {
     background-color: #007bff;
     color: white;

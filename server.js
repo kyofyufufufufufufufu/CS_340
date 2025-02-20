@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 5671;
 // Create an Express app
 const app = express();
 
-// Middleware for static files (Move this after app initialization)
+// Middleware for static files (This stays here for initialization)
 app.use(express.static('public'));
 
 // Page data
@@ -100,7 +100,6 @@ hbs.handlebars.registerHelper('isNotEqual', function (a, b, options) {
 app.engine('hbs', exphbs.engine({extname: '.hbs'}));
 app.set('view engine', 'hbs');
 
-// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -132,7 +131,7 @@ app.get(['/books'], (req, res) => {
     res.render('books', { books, pages });
 });
 
-// Start Server
+
 app.listen(PORT, function (err) {
 	if(err) throw err;
     console.log(`Server running on http://classwork.engr.oregonstate.edu:${PORT}/index.html`);
