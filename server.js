@@ -9,36 +9,29 @@ const app = express();
 // Middleware for static files (This stays here for initialization)
 app.use(express.static('public'));
 
+app.engine('hbs', exphbs.engine({ extname: '.hbs' }));
+app.set('view engine', 'hbs');
+
+// Middleware for JSON and URL encoded form data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 // Page data
 const pages = [
-	{
-		title: 'Home',
-		url: '/'
-	},
-	{
-		title: 'Users',
-		url: '/users'
-	},
-	{
-		title: 'UserBooks',
-		url: '/userbooks'
-	},
-	{
-		title: 'Books',
-		url: '/books'
-	},
-    {
-		title: 'Authors',
-		url: '/authors'
-	},
-	{
-		title: 'BookGenres',
-		url: '/bookgenres'
-	},
-	{
-		title: 'Genres',
-		url: '/genres'
-	}
+    { title: 'Home', url: '/' },
+    { title: 'Users', url: '/users' },
+    { title: 'Books', url: '/books' },
+    { title: 'Authors', url: '/authors' },
+    { title: 'Genres', url: '/genres' },
+    { title: 'UserBooks', url: '/userbooks' },
+    { title: 'AuthorBooks', url: '/authorbooks' },
+    { title: 'BookGenres', url: '/bookgenres' }
+];
+
+const users = [
+    { userID: 1, userName: "lights" },
+    { userID: 2, userName: "test1" },
+    { userID: 3, userName: "booklover" }
 ];
 
 const books = [
@@ -49,12 +42,6 @@ const books = [
     { bookID: 5, bookTitle: "Caliban’s War" }
 ];
 
-const genres = [
-    { genreID: 1, genreName: "Science Fiction" },
-    { genreID: 2, genreName: "Fantasy" },
-    { genreID: 3, genreName: "Mystery & Thriller" }
-];
-
 const authors = [
     { authorID: 1, authorName: "James S.A. Corey" },
     { authorID: 2, authorName: "Liz Moore" },
@@ -62,10 +49,10 @@ const authors = [
     { authorID: 4, authorName: "T.J. Klune" }
 ];
 
-const users = [
-    { userID: 1, userName: "lights" },
-    { userID: 2, userName: "test1" },
-    { userID: 3, userName: "booklover" }
+const genres = [
+    { genreID: 1, genreName: "Science Fiction" },
+    { genreID: 2, genreName: "Fantasy" },
+    { genreID: 3, genreName: "Mystery & Thriller" }
 ];
 
 const userbooks = [
@@ -74,6 +61,14 @@ const userbooks = [
     { userBookID: 3, userName: "booklover", bookTitle: "The God of the Woods", userBookStatus: "dropped", userBookRating: 1 },
     { userBookID: 4, userName: "test1", bookTitle: "A Game of Thrones", userBookStatus: "wishlist", userBookRating: null },
     { userBookID: 5, userName: "lights", bookTitle: "Caliban’s War", userBookStatus: "read", userBookRating: 3 }
+];
+
+const authorbooks = [
+    { authorBookID: 1, authorName: "James S.A. Corey", bookTitle: "Leviathan Wakes" },
+    { authorBookID: 2, authorName: "Liz Moore", bookTitle: "The God of the Woods" },
+    { authorBookID: 3, authorName: "George R.R. Martin", bookTitle: "A Game of Thrones" },
+    { authorBookID: 4, authorName: "T.J. Klune", bookTitle: "The House in the Cerulean Sea" },
+    { authorBookID: 5, authorName: "James S.A. Corey", bookTitle: "Caliban’s War" }
 ];
 
 const bookgenres = [
@@ -87,40 +82,18 @@ const bookgenres = [
 // Register custom Handlebars helpers
 const hbs = exphbs.create({});
 hbs.handlebars.registerHelper('isEqual', function (a, b, options) {
-	if (!options || !options.fn) return ''; 
-	return a === b ? options.fn(this) : options.inverse(this);
+    if (!options || !options.fn) return ''; 
+    return a === b ? options.fn(this) : options.inverse(this);
 });
 
 hbs.handlebars.registerHelper('isNotEqual', function (a, b, options) {
-	if (!options || !options.fn) return ''; 
-	return a !== b ? options.fn(this) : options.inverse(this);
+    if (!options || !options.fn) return ''; 
+    return a !== b ? options.fn(this) : options.inverse(this);
 });
 
-// Configure Handlebars
-app.engine('hbs', exphbs.engine({extname: '.hbs'}));
-app.set('view engine', 'hbs');
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-app.get('/', (req, res) => {
+// Routes
+app.get(['/'], (req, res) => {
     res.render('home', { pages });
-});
-
-app.get(['/bookgenres'], (req, res) => {
-    res.render('bookgenres', { books, genres, bookgenres, pages });
-});
-
-app.get(['/userbooks'], (req, res) => {
-    res.render('userbooks', { users, books, userbooks, pages });
-});
-
-app.get(['/authors'], (req, res) => {
-    res.render('authors', { authors, pages });
-});
-
-app.get(['/genres'], (req, res) => {
-    res.render('genres', { genres, pages });
 });
 
 app.get(['/users'], (req, res) => {
@@ -131,8 +104,33 @@ app.get(['/books'], (req, res) => {
     res.render('books', { books, pages });
 });
 
+app.get(['/authors'], (req, res) => {
+    res.render('authors', { authors, pages });
+});
 
+app.get(['/genres'], (req, res) => {
+    res.render('genres', { genres, pages });
+});
+
+app.get(['/userbooks'], (req, res) => {
+    res.render('userbooks', { users, books, userbooks, pages });
+});
+
+app.get(['/authorbooks'], (req, res) => {
+    console.log('Navigating to authorbooks route');
+    res.render('authorbooks', { authors, books, authorbooks, pages });
+});
+
+app.get(['/bookgenres'], (req, res) => {
+    res.render('bookgenres', { books, genres, bookgenres, pages });
+});
+
+app.get('/test', (req, res) => {
+    res.send('Test route is working');
+});
+
+// Start the server
 app.listen(PORT, function (err) {
-	if(err) throw err;
+    if (err) throw err;
     console.log(`Server running on http://classwork.engr.oregonstate.edu:${PORT}/index.html`);
 });

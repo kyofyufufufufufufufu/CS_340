@@ -60,9 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Track selections for books, users, and authors
     function trackSelection(type) {
         selectedItems[type] = [];
-        document.querySelectorAll(.select-row-${type}).forEach(row => {
+        document.querySelectorAll(`.select-row-${type}`).forEach(row => {
             row.addEventListener("change", function () {
-                const id = this.getAttribute(data-${type}-id);
+                const id = this.getAttribute(`data-${type}-id`);
                 if (this.checked) {
                     selectedItems[type].push(id);
                 } else {

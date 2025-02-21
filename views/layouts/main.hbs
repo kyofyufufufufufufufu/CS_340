@@ -8,11 +8,16 @@
 </head>
 <body>
     <nav>
-        <div id="navSpace"></div>
-        {{#each pages}}
-            <a class="page {{#isEqual title ../title}}curr{{/isEqual}}" href="{{url}}">{{title}}</a>
-        {{/each}}
-    </nav>
+    <div id="navSpace"></div>
+    <a href="http://classwork.engr.oregonstate.edu:5671">Home</a>
+    <a href="/users">Users</a>
+    <a href="/books">Books</a>
+    <a href="/authors">Authors</a>
+    <a href="/genres">Genres</a>
+    <a href="/userbooks">UserBooks</a>
+    <a href="/authorbooks">AuthorBooks</a>
+    <a href="/bookgenres">BookGenres</a>
+</nav>
 
     <div id="util">
         <h1>{{title}}</h1>
