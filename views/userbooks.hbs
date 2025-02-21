@@ -1,4 +1,4 @@
-<h1>User Book Tracking</h1>
+<h1>User Book Data</h1>
 
 <form action="/add-userbook" method="POST">
     <label for="user">User:</label>
@@ -33,7 +33,13 @@
     <button type="submit">Add User Book</button>
 </form>
 
-<hr>
+<div class="form-spacing"></div>
+
+<!-- Search Form -->
+<form action="/search-book" method="POST">
+    <input type="text" id="bookTitle" name="bookTitle" required>
+    <button type="submit">Search</button>
+</form>
 
 <h2>User Book List</h2>
 <table>

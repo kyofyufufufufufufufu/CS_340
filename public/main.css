@@ -1,14 +1,17 @@
 :root {
-    --accent: #737239;
-    --lGray: #fafafa;
-    --mGray: #ebebeb;
-    --dGray: #878787;
-    --sPad: 15px;
-    --mPad: 30px;
-    --bPad: 90px;
-    --header-bg: #ffffff;
-    --nav-link-color: #007bff;
-    --nav-link-hover-color: #0056b3;
+	--accent: #4C6B6C;
+	--lGray: #fafafa;
+	--mGray: #ebebeb;
+	--dGray: #878787;
+	--sPad: 15px;
+	--mPad: 30px;
+	--bPad: 90px;
+}
+
+@font-face {
+	font-family: typeface;
+	src: url(typeface.woff2) format(woff2),
+		url(typeface.woff) format(woff);
 }
 
 body {
@@ -17,78 +20,176 @@ body {
     align-items: center;
     justify-content: center;
     margin: var(--bPad) auto 0;
-    max-width: 800px;
+    max-width: 1000px;
     background-color: var(--lGray);
     font-family: Arial, Helvetica, sans-serif;
     color: var(--dGray);
 }
 
-header {
-    width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-header h1 {
-    font-size: 2rem;
-    margin: 0;
-}
-
 nav {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 40px;
-}
-nav a {
-    font-size: 1.1rem;
-}
-
-nav a:hover {
-    color: var(--nav-link-hover-color);
+	position: fixed;
+	top: 0;
+	width: 100%;
+	left: 0;
+	height: 57px;
+	background-color: var(--lGray);
+	border-bottom: 3px solid var(--mGray);
+	overflow: visible;
 }
 
-.content {
+#navSpace {
+	width: var(--bPad);
+}
+
+nav div, nav a {
+	float: left;
+	display: flex;
+	height: 100%;
+	align-items: center;
+	justify-content: center;
+	width: calc(5 * var(--mPad));
+}
+
+.page, #util p {
+	text-decoration: none;
+	color: var(--dGray);
+}
+
+.curr {
+	font-weight: bold;
+	color: var(--accent);
+	border-bottom: 3px solid var(--accent);
+}
+
+.curr, .page:hover {
+	background-color: var(--mGray);
+}
+
+#util {
+	width: calc(3 * var(--bPad));
+}
+
+#util h1 {
+	margin: 0;
+	color: var(--accent);
+}
+
+#util p {
+	margin: 0;
+	font-size: 1.17em;
+}
+
+#util button {
+	width: 100%;
+	height: calc(var(--mPad) * 1.5);
+	margin: var(--sPad) 0 0;
+	border: 2px solid transparent;
+	border-radius: 5px;
+	background-color: var(--mGray);
+	color: var(--dGray);
+	font-size: medium;
+	font-weight: bold;
+	font-family: typeface;
+}
+
+#util button:hover {
+	background-color: var(--lGray);
+	border-color: var(--mGray);
+}
+
+
+
+#util dialog {
+	width: 50%;
+	border: none;
+	border-radius: 10px;
+	
+	& form {
+		& legend {
+			font-size: large;
+			font-weight: bold;
+			color: var(--accent);
+		}
+		
+		& fieldset {
+			border: 2px solid var(--mGray);
+			border-radius: 5px;
+			
+			& input, select {
+				width: 100%;
+				padding: 5px;
+				border-radius: 3px;
+				margin-bottom: var(--sPad);
+				border: 1px solid var(--mGray);
+				background-color: var(--lGray);
+				box-sizing: border-box;
+				appearance: none;
+			}
+			
+			& input:last-child, select:last-child {
+				margin-bottom: 0px;
+			}
+		}
+		
+		.formButtons {
+			display: flex;
+			
+			& button {
+				flex: 1;
+				margin: 3px;
+			}
+		}
+	}
+}
+
+main {
+	padding: var(--mPad);
+	padding-top: 0;
+	width: 100%;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px 0 var(--mGray);
+	background-color: #fff;
+}
+
+main h2 {
+	padding-top: var(--mPad);
+	color: var(--accent);
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	overflow: hidden;
+	box-shadow: 0 4px 8px var(--mGray);
+	border-radius: 10px;
+	
+	& thead th {
+		text-align: left;
+		background-color: var(--accent);
+		color: #fff;
+	}
+	
+	& tbody {
+		& tr {
+			border-top: 1px solid var(--mGray);
+		}
+
+		& tr:has(> td input:checked) {
+			border-top: 1px solid var(--lGray);
+			background-color: var(--mGray);
+		}
+	}
+	
+	& thead th, & tbody td {
+		padding: var(--sPad);
+		padding-right: 0;
+	}
+}
+
+.form-spacing {
     width: 100%;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: var(--sPad);
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.content h2 {
-    font-size: 1.5rem;
-    margin-top: 20px;
-}
-
-.content h3 {
-    font-size: 1.25rem;
-    margin-top: 15px;
-}
-
-.content p {
-    line-height: 1.6;
-}
-
-.content h3 {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.content p {
-    margin-bottom: 20px;
-}
-
-.expand-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
     padding: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.expand-btn:hover {
-    background-color: #0056b3;
+    border-radius: 3px;
+    margin-bottom: var(--sPad);
+    background-color: var(--lGray);
 }

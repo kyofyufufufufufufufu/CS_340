@@ -1,16 +1,21 @@
-<form action="/books/add" method="POST">
-    {{#each columns}}
-        <label for="{{name}}">{{description}}:</label>
-        {{#isEqual type "date"}}
-            <input type="date" id="{{name}}" name="{{name}}">
-        {{else}}
-            <input type="{{type}}" id="{{name}}" name="{{name}}">
-        {{/isEqual}}
-        <br>
-    {{/each}}
-    <button type="submit">Add Book</button>
+<h1>Book Data</h1>
+
+<!-- Button to open the modal -->
+<button id="createBooksBtn">Add New Book</button>
+<button id="editBookBtn">Edit Book</button>
+<button id="deleteBookBtn">Delete</button>
+
+<div class="form-spacing"></div>
+
+<!-- Search Form -->
+<form action="/search-book" method="POST">
+    <input type="text" id="bookTitle" name="bookTitle" required>
+    <button type="submit">Search</button>
 </form>
 
+<div class="form-spacing"></div>
+
+<h2>Book List</h2>
 <table>
   <thead>
     <tr>
@@ -23,35 +28,35 @@
   </thead>
   <tbody>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-book-id="1" /></td>
       <td>1</td>
       <td>Leviathan Wakes</td>
       <td>Humanity has colonized the solar system—Mars, the Moon, the Asteroid Belt and beyond—but the stars are still out of our reach. Jim Holden is XO of an ice miner making runs from the rings of Saturn to the mining stations of the Belt...</td>
       <td>2011-06-02</td>
     </tr>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-book-id="2" /></td>
       <td>2</td>
       <td>The God of the Woods</td>
       <td>When a teenager vanishes from her Adirondack summer camp, two worlds collide. Early morning, August 1975: a camp counselor discovers an empty bunk. Its occupant, Barbara Van Laar, has gone missing...</td>
       <td>2024-07-02</td>
     </tr>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-book-id="3" /></td>
       <td>3</td>
       <td>A Game of Thrones</td>
       <td>Long ago, in a time forgotten, a preternatural event threw the seasons out of balance. In a land where summers can last decades and winters a lifetime, trouble is brewing...</td>
       <td>1996-08-06</td>
     </tr>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-book-id="4" /></td>
       <td>4</td>
       <td>The House in the Cerulean Sea</td>
       <td>A magical island. A dangerous task. A burning secret. Linus Baker leads a quiet, solitary life. At forty, he lives in a tiny house with a devious cat and his old records...</td>
       <td>2020-03-16</td>
     </tr>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-book-id="5" /></td>
       <td>5</td>
       <td>Caliban’s War</td>
       <td>We are not alone. On Ganymede, breadbasket of the outer planets, a Martian marine watches as her platoon is slaughtered by a monstrous supersoldier. On Earth, a high-level politician struggles to prevent interplanetary war...</td>
@@ -59,3 +64,123 @@
     </tr>
   </tbody>
 </table>
+
+<!-- Modal for creating a new book -->
+<dialog id="createBookForm">
+    <form action="/add-book" method="POST">
+        <legend>Create New Book</legend>
+        <fieldset>
+            <label for="newBookTitle">Title:</label>
+            <input type="text" id="newBookTitle" name="bookTitle" required>
+
+            <label for="newDesc">Description:</label>
+            <input type="text" id="bookDescription" name="bookDescription" required>
+
+            <label for="newPublishDate">Publish Date:</label>
+            <input type="date" id="bookPublishDate" name="bookPublishDate" required>
+        </fieldset>
+        <div class="formButtons">
+            <button type="button" id="closeForm">Cancel</button>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Edit Book Modal -->
+<dialog id="editBookForm">
+    <form action="/edit-book" method="POST">
+        <legend>Edit Existing Book</legend>
+        <fieldset>
+            <input type="hidden" id="editBookId" name="bookId">
+            
+            <label for="editBookTitle">New Title:</label>
+            <input type="text" id="editTitle" name="bookTitle" readonly>
+
+            <label for="editDesc">New Description:</label>
+            <input type="text" id="editDesc" name="bookDescription">
+
+            <label for="editPublishDate">New Publish Date:</label>
+            <input type="date" id="editPublishDate" name="bookPublishDate">
+        </fieldset>
+        <div class="formButtons">
+            <button type="button" id="closeForm">Cancel</button>
+            <button type="submit">Update</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Delete Book Modal -->
+<dialog id="deleteBookForm">
+    <form action="/delete-book" method="POST">
+        <legend>Confirm Deletion</legend>
+        <p>Are you sure you want to delete the book <strong id="deleteBookNameText"></strong>?</p>
+        
+        <input type="hidden" id="deleteBookId" name="bookId">
+
+        <div class="formButtons">
+            <button type="button" id="closeForm">Cancel</button>
+            <button type="submit">Delete</button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get buttons
+    const createBooksBtn = document.getElementById("createBooksBtn");
+    const editBookBtn = document.getElementById("editBookBtn");
+    const deleteBookBtn = document.getElementById("deleteBookBtn");
+
+    // Get modals
+    const createBookForm = document.getElementById("createBookForm");
+    const editBookForm = document.getElementById("editBookForm");
+    const deleteBookForm = document.getElementById("deleteBookForm");
+
+    // Get all close buttons
+    const closeButtons = document.querySelectorAll("#closeForm");
+
+    // Open modals when buttons are clicked
+    createBooksBtn?.addEventListener("click", () => createBookForm.showModal());
+    editBookBtn?.addEventListener("click", () => {
+        const selectedRow = document.querySelector('input.select-row:checked');
+        
+        // If no checkbox is selected, show an alert
+        if (!selectedRow) {
+            alert("Please select a book to edit.");
+            return;
+        }
+
+        // If a checkbox is selected, populate the fields and open the modal
+        const tr = selectedRow.closest("tr");
+        document.getElementById("editBookId").value = selectedRow.getAttribute("data-book-id");
+        document.getElementById("editTitle").value = tr.children[2].textContent;
+        document.getElementById("editDesc").value = tr.children[3].textContent;
+        document.getElementById("editPublishDate").value = tr.children[4].textContent;
+
+        editBookForm.showModal();
+    });
+    deleteBookBtn?.addEventListener("click", () => {
+        const selectedRow = document.querySelector('input.select-row:checked');
+        
+        // If no checkbox is selected, show an alert
+        if (!selectedRow) {
+            alert("Please select a book to delete.");
+            return;
+        }
+
+        // If a checkbox is selected, show the delete confirmation modal
+        const tr = selectedRow.closest("tr");
+        document.getElementById("deleteBookId").value = selectedRow.getAttribute("data-book-id");
+        document.getElementById("deleteBookNameText").textContent = tr.children[2].textContent;
+
+        deleteBookForm.showModal();
+    });
+
+    // Close modals when close button is clicked
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            this.closest("dialog").close();
+        });
+    });
+});
+</script>

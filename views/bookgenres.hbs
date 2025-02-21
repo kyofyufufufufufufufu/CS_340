@@ -1,12 +1,8 @@
-<h1>Assign Genres to Books</h1>
+<h1>Book Genre Data</h1>
 
 <form action="/add-genrebook" method="POST">
     <label for="book">Book:</label>
-    <select id="book" name="bookID">
-        {{#each books}}
-            <option value="{{bookID}}">{{bookTitle}}</option>
-        {{/each}}
-    </select>
+    <input type="text" id="bookTitle" name="bookTitle" required>
 
     <label for="genre">Genre:</label>
     <select id="genre" name="genreID">
@@ -30,7 +26,7 @@
     </tr>
   </thead>
   <tbody>
-    {{#each genrebooks}}
+    {{#each bookgenres}}
     <tr>
       <td>{{genreBookID}}</td>
       <td>{{bookTitle}}</td>

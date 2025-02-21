@@ -1,3 +1,22 @@
+<h1>User Data</h1>
+
+<!-- Button to open the modal -->
+<button id="createUserBtn">Create New User</button>
+<button id="editUserBtn">Edit Existing User</button>
+<button id="deleteUserBtn">Delete</button>
+
+<div class="form-spacing"></div>
+
+<!-- Search Form -->
+<form action="/search-user" method="POST">
+    <input type="text" id="userName" name="userName" required>
+    <button type="submit">Search</button>
+</form>
+
+<div class="form-spacing"></div>
+
+<!-- Table for displaying users -->
+<h2>Users List</h2>
 <table>
   <thead>
     <tr>
@@ -9,22 +28,23 @@
     </tr>
   </thead>
   <tbody>
+    <!-- Example User -->
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-user-id="1" /></td>
       <td>1</td>
       <td>lights</td>
       <td>12345</td>
       <td>lights2@gmail.com</td>
     </tr>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-user-id="2" /></td>
       <td>2</td>
       <td>test1</td>
       <td>34256</td>
       <td>tester@email.com</td>
     </tr>
     <tr>
-      <td><input type="checkbox" class="select-row" /></td>
+      <td><input type="checkbox" class="select-row" data-user-id="3" /></td>
       <td>3</td>
       <td>booklover</td>
       <td>54321</td>
@@ -32,3 +52,125 @@
     </tr>
   </tbody>
 </table>
+
+<!-- Modals -->
+
+<!-- Modal for creating a new user -->
+<dialog id="createUserForm">
+    <form action="/add-user" method="POST">
+        <legend>Create New User</legend>
+        <fieldset>
+            <label for="newUserName">Username:</label>
+            <input type="text" id="newUserName" name="userName" required>
+
+            <label for="newPassword">Password:</label>
+            <input type="password" id="newPassword" name="password" required>
+
+            <label for="newEmail">Email:</label>
+            <input type="email" id="newEmail" name="email" required>
+        </fieldset>
+        <div class="formButtons">
+            <button type="button" id="closeForm">Cancel</button>
+            <button type="submit">Submit</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Edit User Modal -->
+<dialog id="editUserForm">
+    <form action="/edit-user" method="POST">
+        <legend>Edit Existing User</legend>
+        <fieldset>
+            <input type="hidden" id="editUserId" name="userId">
+            
+            <label for="editUserName">Username:</label>
+            <input type="text" id="editUserName" name="userName" readonly>
+
+            <label for="editPassword">New Password:</label>
+            <input type="password" id="editPassword" name="password">
+
+            <label for="editEmail">New Email:</label>
+            <input type="email" id="editEmail" name="email">
+        </fieldset>
+        <div class="formButtons">
+            <button type="button" id="closeForm">Cancel</button>
+            <button type="submit">Update</button>
+        </div>
+    </form>
+</dialog>
+
+<!-- Delete User Modal -->
+<dialog id="deleteUserForm">
+    <form action="/delete-user" method="POST">
+        <legend>Confirm Deletion</legend>
+        <p>Are you sure you want to delete user <strong id="deleteUserNameText"></strong>?</p>
+        
+        <input type="hidden" id="deleteUserId" name="userId">
+
+        <div class="formButtons">
+            <button type="button" id="closeForm">Cancel</button>
+            <button type="submit">Delete</button>
+        </div>
+    </form>
+</dialog>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Get buttons
+    const createUserBtn = document.getElementById("createUserBtn");
+    const editUserBtn = document.getElementById("editUserBtn");
+    const deleteUserBtn = document.getElementById("deleteUserBtn");
+
+    // Get modals
+    const createUserForm = document.getElementById("createUserForm");
+    const editUserForm = document.getElementById("editUserForm");
+    const deleteUserForm = document.getElementById("deleteUserForm");
+
+    // Get all close buttons
+    const closeButtons = document.querySelectorAll("#closeForm");
+
+    // Open modals when buttons are clicked
+    createUserBtn?.addEventListener("click", () => createUserForm.showModal());
+    editUserBtn?.addEventListener("click", () => {
+        const selectedRow = document.querySelector('input.select-row:checked');
+
+        // If no checkbox is selected, show an alert
+        if (!selectedRow) {
+            alert("Please select a user to edit.");
+            return;
+        }
+
+        // If a checkbox is selected, populate the fields and open the modal
+        const tr = selectedRow.closest("tr");
+        document.getElementById("editUserId").value = selectedRow.getAttribute("data-user-id");
+        document.getElementById("editUserName").value = tr.children[2].textContent;
+        document.getElementById("editPassword").value = ""; // You can leave this empty if password isn't part of the initial edit
+        document.getElementById("editEmail").value = tr.children[4].textContent;
+
+        editUserForm.showModal();
+    });
+    deleteUserBtn?.addEventListener("click", () => {
+        const selectedRow = document.querySelector('input.select-row:checked');
+        
+        // If no checkbox is selected, show an alert
+        if (!selectedRow) {
+            alert("Please select a user to delete.");
+            return;
+        }
+
+        // If a checkbox is selected, show the delete confirmation modal
+        const tr = selectedRow.closest("tr");
+        document.getElementById("deleteUserId").value = selectedRow.getAttribute("data-user-id");
+        document.getElementById("deleteUserNameText").textContent = tr.children[2].textContent;
+
+        deleteUserForm.showModal();
+    });
+
+    // Close modals when close button is clicked
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            this.closest("dialog").close();
+        });
+    });
+});
+</script>
