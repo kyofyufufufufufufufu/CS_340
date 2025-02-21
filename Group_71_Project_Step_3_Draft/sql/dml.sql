@@ -41,20 +41,24 @@ DELETE FROM Books WHERE bookID = :bookID;
 --------------- UserBooks ---------------
 
 -- Read - Get all books from all users
-SELECT userBookID, 
-    (SELECT userID FROM Users WHERE userID = UserBooks.userID) AS userName, 
-    (SELECT bookID FROM Books WHERE bookID = Books.bookID) AS bookName, 
-    userBookStatus,
-    userBookRating
-FROM UserBooks;
+SELECT UserBooks.userBookID, Users.username,
+    Books.bookTitle AS bookName, 
+    UserBooks.userBookStatus,
+    UserBooks.userBookRating
+FROM UserBooks
+    INNER JOIN Users ON Users.userID = UserBooks.userID
+    INNER JOIN Books ON Books.bookID = UserBooks.bookID;
 
 -- Create - Add a book to a user's library.
 -- Dynamic inputs: (:userID, :bookID, :rating, :status)
 INSERT INTO UserBooks (userID, bookID, userBookRating, userBookStatus)
-VALUES (
-    (SELECT userID FROM Users WHERE userID = :userID),
-    (SELECT bookID FROM Books WHERE bookID = :bookID),
-    :rating, :status);
+SELECT 
+    Users.userID, 
+    Books.bookID, 
+    :rating, 
+    :status
+FROM Users, Books 
+WHERE Users.userID = :userID AND Books.bookID = :bookID;
 
 -- Update UserBook entry
 -- Dynamic inputs: (:userID, :bookID, :rating, :status)
@@ -91,7 +95,6 @@ DELETE FROM Authors WHERE authorID = :authorID;
 -- Read - Get all genres
 SELECT genreID, genreName FROM Genres;
 
-
 -- Create - Add a new Genre
 -- Dynamic inputs: (:genreName)
 INSERT INTO Genres (genreName)
@@ -109,12 +112,13 @@ DELETE FROM Genres WHERE genreID = :genreID;
 
 ---------------- AuthorsofBooks ---------------
 
--- Read - Get books from authors.
-SELECT authorBookID, 
-    (SELECT authorName FROM Authors WHERE authorID = AuthorsofBooks.authorID) AS authorFullName,
-    (SELECT bookTitle FROM Books WHERE bookID = AuthorsofBooks.bookID) AS bookName
-FROM AuthorsofBooks;
-
+-- Read - Get books from authors
+SELECT AuthorsofBooks.authorBookID, 
+    Authors.authorName AS authorFullname,
+    Books.bookTitle
+FROM AuthorsofBooks
+    INNER JOIN Authors on Authors.authorID = AuthorsofBooks.authorID
+    INNER JOIN Books on Books.bookID = AuthorsofBooks.bookID;
 
 -- Create - Assign a book to an author.
 -- Dynamic inputs: (:authorName, :bookTitle)
@@ -138,10 +142,12 @@ DELETE FROM AuthorsofBooks WHERE authorBookID = :authorBookID;
 --------------- GenresofBooks ---------------
 
 -- Read- Get books of all genres
-SELECT genreBookID, 
-    (SELECT genreName FROM Genres WHERE genreID = GenresofBooks.genreID) AS nameOfGenre,
-    (SELECT bookTitle FROM Books WHERE bookID = GenresofBooks.bookID) AS bookName
-FROM GenresofBooks;
+SELECT GenresofBooks.genreBookID, 
+    Genres.genreName AS nameOfGenre,
+    Books.bookTitle AS bookName
+FROM GenresofBooks
+    INNER JOIN Genres on Genres.genreID = GenresofBooks.genreID
+    INNER JOIN Books on Books.bookID = GenresofBooks.bookID;
 
 -- Create - Add a book to a genre.
 -- Dynamic inputs: (:genreName)
