@@ -29,9 +29,9 @@ const pages = [
 ];
 
 const users = [
-    { userID: 1, userName: "lights" },
-    { userID: 2, userName: "test1" },
-    { userID: 3, userName: "booklover" }
+    { userID: 1, userName: "lights", password: "12345", email: "lights2@gmail.com"},
+    { userID: 2, userName: "test1", password: "34256", email: "tester@email.com"},
+    { userID: 3, userName: "booklover", password: "54321", email: "books4life@gmail.com"}
 ];
 
 const books = [

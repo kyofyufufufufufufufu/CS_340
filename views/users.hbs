@@ -1,9 +1,11 @@
 <h1>User Data</h1>
 
 <!-- Button to open the modal -->
-<button id="createUserBtn">Create New User</button>
-<button id="editUserBtn">Edit Existing User</button>
-<button id="deleteUserBtn">Delete</button>
+<section class="user_buttons">
+    <button id="createUserBtn">Create New User</button>
+    <button id="editUserBtn">Edit Existing User</button>
+    <button id="deleteUserBtn">Delete</button>
+</section>
 
 <div class="form-spacing"></div>
 
@@ -17,7 +19,7 @@
 
 <!-- Table for displaying users -->
 <h2>Users List</h2>
-<table>
+<table id="user_table">
   <thead>
     <tr>
       <th><input type="checkbox" id="select-all" /></th>
@@ -28,13 +30,13 @@
     </tr>
   </thead>
   <tbody>
-    <!-- Example User -->
     <tr>
       <td><input type="checkbox" class="select-row" data-user-id="1" /></td>
       <td>1</td>
       <td>lights</td>
       <td>12345</td>
       <td>lights2@gmail.com</td>
+      
     </tr>
     <tr>
       <td><input type="checkbox" class="select-row" data-user-id="2" /></td>
@@ -131,6 +133,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Open modals when buttons are clicked
     createUserBtn?.addEventListener("click", () => createUserForm.showModal());
+
+    //Edit Users event listener
     editUserBtn?.addEventListener("click", () => {
         const selectedRow = document.querySelector('input.select-row:checked');
 
@@ -149,6 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         editUserForm.showModal();
     });
+    //Delete Users event listener
     deleteUserBtn?.addEventListener("click", () => {
         const selectedRow = document.querySelector('input.select-row:checked');
         
