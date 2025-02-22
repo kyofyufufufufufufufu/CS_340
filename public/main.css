@@ -27,34 +27,35 @@ body {
 }
 
 nav {
+	display: flex;
+	flex-wrap: wrap;
 	position: fixed;
+	align-items: center;
+	justify-content: center;
+    gap: 1rem;
 	top: 0;
 	width: 100%;
 	left: 0;
-	height: 57px;
+	padding: 15px 10px;
 	background-color: var(--lGray);
 	border-bottom: 3px solid var(--mGray);
-	overflow: visible;
 }
 
-/* #navSpace {
-	width: var(--bPad);
-} */
-
-nav div, nav a {
-	float: left;
-	display: flex;
+.nav_links a {
 	height: 100%;
+    padding: 8px 15px;
 	align-items: center;
-	justify-content: center;
 	width: calc(5 * var(--mPad));
-    border-radius: 5px;
     font-size: 1em;
     font-weight: bold;
     margin-right: 1rem;
     margin-bottom: 10px;
-    padding: 12px 10px;
-    text-decoration:none;
+    text-decoration: none;
+} 
+
+
+#navSpace {
+	width: var(--bPad);
 }
 
 .page, #util p {
