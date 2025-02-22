@@ -65,6 +65,11 @@ nav div, nav a {
 	background-color: var(--mGray);
 }
 
+hr {
+	border: none;
+}
+  
+
 #util {
 	width: calc(3 * var(--bPad));
 }
