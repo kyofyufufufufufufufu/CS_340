@@ -1,20 +1,25 @@
+// Create an Express app
 const express = require('express');
-const exphbs = require('express-handlebars');
+const app = express();
+// Middleware for JSON and URL encoded form data
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
+app.use(express.static('public'))
 const PORT = process.env.PORT || 5671;
 
-// Create an Express app
-const app = express();
-
-// Middleware for static files (This stays here for initialization)
-app.use(express.static('public'));
-
+const { engine } = require('express-handlebars');
+const exphbs = require('express-handlebars');
 app.engine('hbs', exphbs.engine({ extname: '.hbs' }));
 app.set('view engine', 'hbs');
 
-// Middleware for JSON and URL encoded form data
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Database
+const db = require('./database/db-connector')
+
+//Render Homepage
+// app.get("/", (req, res) => {
+//     res.render("index");
+//   });
 
 // Page data
 const pages = [

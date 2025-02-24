@@ -82,3 +82,4 @@ document.addEventListener("DOMContentLoaded", function () {
     trackSelection("user");
     trackSelection("author");
 });
+
