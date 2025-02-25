@@ -1,3 +1,7 @@
+<script
+  src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+></script>
+
 <h1>Book Genre Data</h1>
 
 <form action="/add-genrebook" method="POST">
@@ -14,24 +18,29 @@
     <button type="submit">Assign Genre</button>
 </form>
 
-<hr>
+<hr/ >
 
 <h2>Book Genres List</h2>
-<table>
+<table id="book_genres_table">
   <thead>
     <tr>
       <th>ID</th>
-      <th>Book</th>
       <th>Genre</th>
+      <th>Book</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
     {{#each bookgenres}}
-    <tr>
-      <td>{{genreBookID}}</td>
-      <td>{{bookTitle}}</td>
-      <td>{{genreName}}</td>
-    </tr>
+      <tr>
+        <tr data-value={{this.genreBookID}}></tr>
+        <td>{{this.genreBookID}}</td>
+        <td>{{this.genreID}}</td>
+        <td>{{this.bookID}}</td>
+        <td><button
+                  onclick="deleteUser({{this.genreBookID}})"
+                  >Delete</button></td>
+      </tr>
     {{/each}}
   </tbody>
 </table>

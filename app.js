@@ -174,14 +174,59 @@ app.get('/authorbooks', function(req, res) {
 
 });
 
-app.get('/bookgenres', function(req, res)
-{  
-    let query1 = "SELECT * FROM GenresofBooks;";                    // Define our query
+app.get('/bookgenres', function(req, res) {  
 
-    db.pool.query(query1, function(error, rows, fields){    // Execute the query
+    let query1 = "SELECT * FROM GenresofBooks;";
 
-        res.render('bookgenres', {data: rows});                  // Render the index.hbs file, and also send the renderer
-    })                                                      // an object where 'data' is equal to the 'rows' we
+    let query2 = "SELECT * FROM Genres;";
+
+    let query3 = "SELECT * FROM Books;";
+
+    db.pool.query(query1, function(error, rows, fields) {  
+
+        let bookgenres = rows;
+
+        db.pool.query(query2, function (error, rows, fields) {
+
+            let genres = rows;
+            let genremap = {}
+
+            genres.map(genre => {
+                let id = parseInt(genre.genreID, 10);
+                genremap[id] = genre["genreName"]
+            })
+
+            bookgenres = bookgenres.map(bookgenre => {
+                return Object.assign(bookgenre, {genreID: genremap[bookgenre.genreID]})
+            })
+
+            db.pool.query(query3, function (error, rows, fields) {
+
+                if (error) {
+                    console.error("Error executing query1:", error);
+                    return res.status(500).send("Database error: Duplicate ID chosen");
+                }
+
+                let books = rows;
+                let bookmap = {}
+
+                books.map(book => {
+                    let id = parseInt(book.bookID, 10);
+                    bookmap[id] = book["bookTitle"];
+                })
+
+                bookgenres = bookgenres.map(bookgenre => {
+                    return Object.assign(bookgenre, {bookID: bookmap[bookgenre.bookID]})
+                })
+
+                return res.render('bookgenres', {bookgenres: bookgenres, genres: genres, books: books});
+
+            });
+
+        });
+
+    });
+
 });
 
 
