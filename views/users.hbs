@@ -1,10 +1,11 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <h1>User Data</h1>
 
 <!-- Button to open the modal -->
 <section class="user_buttons">
     <button id="createUserBtn">Create New User</button>
     <button id="editUserBtn">Edit Existing User</button>
-    <button id="deleteUserBtn">Delete</button>
 </section>
 
 <div class="form-spacing"></div>
@@ -22,36 +23,26 @@
 <table id="user_table">
   <thead>
     <tr>
-      <th><input type="checkbox" id="select-all" /></th>
+      {{!-- <th><input type="checkbox" id="select-all" /></th> --}}
       <th>ID</th>
       <th>Username</th>
       <th>Password</th>
       <th>Email</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-user-id="1" /></td>
-      <td>1</td>
-      <td>lights</td>
-      <td>12345</td>
-      <td>lights2@gmail.com</td>
-      
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-user-id="2" /></td>
-      <td>2</td>
-      <td>test1</td>
-      <td>34256</td>
-      <td>tester@email.com</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-user-id="3" /></td>
-      <td>3</td>
-      <td>booklover</td>
-      <td>54321</td>
-      <td>books4life@gmail.com</td>
-    </tr>
+    {{#each data}}
+        <tr data-value="{{this.userID}}">
+        <td>{{this.userID}}</td>
+        <td>{{this.userName}}</td>
+        <td>{{this.password}}</td>
+        <td>{{this.email}}</td>
+        <td><button
+                onclick="deleteUser({{this.userID}})"
+                >Delete</button></td>
+        </tr>
+    {{/each}}
   </tbody>
 </table>
 
@@ -59,21 +50,21 @@
 
 <!-- Modal for creating a new user -->
 <dialog id="createUserForm">
-    <form action="/add-user" method="POST">
+    <form id="add-user-form-ajax">
         <legend>Create New User</legend>
         <fieldset>
-            <label for="newUserName">Username:</label>
-            <input type="text" id="newUserName" name="userName" required>
+            <label for="input-userName">Username:</label>
+            <input type="text" id="input-userName" name="input-userName" required>
 
-            <label for="newPassword">Password:</label>
-            <input type="password" id="newPassword" name="password" required>
+            <label for="input-password">Password:</label>
+            <input type="password" id="input-password" name="input-password" required>
 
-            <label for="newEmail">Email:</label>
-            <input type="email" id="newEmail" name="email" required>
+            <label for="input-email">Email:</label>
+            <input type="email" id="input-email" name="input-email" required>
         </fieldset>
         <div class="formButtons">
+            <input type="submit">
             <button type="button" id="closeForm">Cancel</button>
-            <button type="submit">Submit</button>
         </div>
     </form>
 </dialog>
@@ -102,7 +93,7 @@
 </dialog>
 
 <!-- Delete User Modal -->
-<dialog id="deleteUserForm">
+{{!-- <dialog id="deleteUserForm">
     <form action="/delete-user" method="POST">
         <legend>Confirm Deletion</legend>
         <p>Are you sure you want to delete user <strong id="deleteUserNameText"></strong>?</p>
@@ -114,68 +105,6 @@
             <button type="submit">Delete</button>
         </div>
     </form>
-</dialog>
+</dialog> --}}
 
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Get buttons
-    const createUserBtn = document.getElementById("createUserBtn");
-    const editUserBtn = document.getElementById("editUserBtn");
-    const deleteUserBtn = document.getElementById("deleteUserBtn");
-
-    // Get modals
-    const createUserForm = document.getElementById("createUserForm");
-    const editUserForm = document.getElementById("editUserForm");
-    const deleteUserForm = document.getElementById("deleteUserForm");
-
-    // Get all close buttons
-    const closeButtons = document.querySelectorAll("#closeForm");
-
-    // Open modals when buttons are clicked
-    createUserBtn?.addEventListener("click", () => createUserForm.showModal());
-
-    //Edit Users event listener
-    editUserBtn?.addEventListener("click", () => {
-        const selectedRow = document.querySelector('input.select-row:checked');
-
-        // If no checkbox is selected, show an alert
-        if (!selectedRow) {
-            alert("Please select a user to edit.");
-            return;
-        }
-
-        // If a checkbox is selected, populate the fields and open the modal
-        const tr = selectedRow.closest("tr");
-        document.getElementById("editUserId").value = selectedRow.getAttribute("data-user-id");
-        document.getElementById("editUserName").value = tr.children[2].textContent;
-        document.getElementById("editPassword").value = ""; // You can leave this empty if password isn't part of the initial edit
-        document.getElementById("editEmail").value = tr.children[4].textContent;
-
-        editUserForm.showModal();
-    });
-    //Delete Users event listener
-    deleteUserBtn?.addEventListener("click", () => {
-        const selectedRow = document.querySelector('input.select-row:checked');
-        
-        // If no checkbox is selected, show an alert
-        if (!selectedRow) {
-            alert("Please select a user to delete.");
-            return;
-        }
-
-        // If a checkbox is selected, show the delete confirmation modal
-        const tr = selectedRow.closest("tr");
-        document.getElementById("deleteUserId").value = selectedRow.getAttribute("data-user-id");
-        document.getElementById("deleteUserNameText").textContent = tr.children[2].textContent;
-
-        deleteUserForm.showModal();
-    });
-
-    // Close modals when close button is clicked
-    closeButtons.forEach(button => {
-        button.addEventListener("click", function () {
-            this.closest("dialog").close();
-        });
-    });
-});
-</script>
+<script src="/js/users.js"></script>

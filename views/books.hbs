@@ -19,52 +19,29 @@
 <div class="form-spacing"></div>
 
 <h2>Book List</h2>
-<table>
+<table id="books_table">
   <thead>
     <tr>
-      <th><input type="checkbox" id="select-all" /></th>
+      {{!-- <th><input type="checkbox" id="select-all" /></th> --}}
       <th>ID</th>
       <th>Title</th>
       <th>Description</th>
       <th>Publish Date</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-book-id="1" /></td>
-      <td>1</td>
-      <td>Leviathan Wakes</td>
-      <td>Humanity has colonized the solar system—Mars, the Moon, the Asteroid Belt and beyond—but the stars are still out of our reach. Jim Holden is XO of an ice miner making runs from the rings of Saturn to the mining stations of the Belt...</td>
-      <td>2011-06-02</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-book-id="2" /></td>
-      <td>2</td>
-      <td>The God of the Woods</td>
-      <td>When a teenager vanishes from her Adirondack summer camp, two worlds collide. Early morning, August 1975: a camp counselor discovers an empty bunk. Its occupant, Barbara Van Laar, has gone missing...</td>
-      <td>2024-07-02</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-book-id="3" /></td>
-      <td>3</td>
-      <td>A Game of Thrones</td>
-      <td>Long ago, in a time forgotten, a preternatural event threw the seasons out of balance. In a land where summers can last decades and winters a lifetime, trouble is brewing...</td>
-      <td>1996-08-06</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-book-id="4" /></td>
-      <td>4</td>
-      <td>The House in the Cerulean Sea</td>
-      <td>A magical island. A dangerous task. A burning secret. Linus Baker leads a quiet, solitary life. At forty, he lives in a tiny house with a devious cat and his old records...</td>
-      <td>2020-03-16</td>
-    </tr>
-    <tr>
-      <td><input type="checkbox" class="select-row" data-book-id="5" /></td>
-      <td>5</td>
-      <td>Caliban’s War</td>
-      <td>We are not alone. On Ganymede, breadbasket of the outer planets, a Martian marine watches as her platoon is slaughtered by a monstrous supersoldier. On Earth, a high-level politician struggles to prevent interplanetary war...</td>
-      <td>2021-06-07</td>
-    </tr>
+    {{#each data}}
+        <tr data-value="{{this.bookID}}">
+        <td>{{this.bookID}}</td>
+        <td>{{this.bookTitle}}</td>
+        <td>{{this.bookDescription}}</td>
+        <td>{{this.bookPublishDate}}</td>
+        <td><button
+                onclick="deleteUser({{this.bookID}})"
+                >Delete</button></td>
+        </tr>
+    {{/each}}
   </tbody>
 </table>
 

@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta charset="UTF-8" />
     <title>Data Management</title>
     <link rel="preload" href="/typeface.woff2" as="font" type="font/arial" crossorigin>
-    <link rel="stylesheet" href="/main.css">
-    <script src="/index.js" defer></script>
+    <link rel="stylesheet" href="../css/main.css">
+    {{!-- <script src="/index.js" defer></script> --}}
 </head>
 <body>
     <nav>
         <div id="navSpace"></div>
         <div class="nav_links">
-            <a href="http://classwork.engr.oregonstate.edu:5671">Home</a>
+            <a href="/">Home</a>
             <a href="/users">Users</a>
             <a href="/books">Books</a>
             <a href="/authors">Authors</a>
@@ -20,73 +21,7 @@
             <a href="/bookgenres">BookGenres</a>
         </div>
     </nav>
-
-    <div id="util">
-        <h1>{{title}}</h1>
-
-        <!-- Conditionally render buttons and modals for Create, Edit, and Delete -->
-        {{#isEqual title "Users"}}
-            <div class="button-container">
-                <button id="create">Create New User</button>
-                <button id="edit">Edit Existing User</button>
-                <button id="delete">Delete User</button>
-            </div>
-
-            <!-- Modals for Create, Edit, and Delete -->
-            <dialog id="createForm">
-                <form method="dialog">
-                    <legend>Create New User</legend>
-                    <fieldset>
-                        <label for="newUserName">Username:</label>
-                        <input type="text" id="newUserName" name="userName">
-
-                        <label for="newPassword">Password:</label>
-                        <input type="password" id="newPassword" name="password">
-
-                        <label for="newEmail">Email:</label>
-                        <input type="email" id="newEmail" name="email">
-                    </fieldset>
-                    <div class="formButtons">
-                        <button value="cancel" formmethod="dialog">Cancel</button>
-                        <button value="default">Submit</button>
-                    </div>
-                </form>
-            </dialog>
-
-            <dialog id="editForm">
-                <form method="dialog">
-                    <legend>Edit Existing User</legend>
-                    <fieldset>
-                        <label for="editUserName">Username:</label>
-                        <input type="text" id="editUserName" name="userName" readonly>
-
-                        <label for="editPassword">New Password:</label>
-                        <input type="password" id="editPassword" name="password">
-
-                        <label for="editEmail">New Email:</label>
-                        <input type="email" id="editEmail" name="email">
-                    </fieldset>
-                    <div class="formButtons">
-                        <button value="cancel" formmethod="dialog">Cancel</button>
-                        <button value="default">Update</button>
-                    </div>
-                </form>
-            </dialog>
-
-            <dialog id="deleteForm">
-                <form method="dialog">
-                    <legend>Confirm Deletion</legend>
-                    <p>Are you sure you want to delete the selected user?</p>
-                    <div class="formButtons">
-                        <button value="cancel" formmethod="dialog">No</button>
-                        <button value="default">Yes</button>
-                    </div>
-                </form>
-            </dialog>
-        {{/isEqual}}
-
-    </div>
-
+    
     <!-- Body content -->
     {{{body}}}
 </body>

@@ -1,3 +1,7 @@
+<script
+  src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"
+></script>
+
 <h1>Author of Books Data</h1>
 
 <form action="/add-authorbook" method="POST">
@@ -13,21 +17,26 @@
 <hr />
 
 <h2>Author Books List</h2>
-<table>
+<table id="authors_books_table">
   <thead>
     <tr>
       <th>ID</th>
-      <th>Book</th>
       <th>Author</th>
+      <th>Book</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
     {{#each authorbooks}}
-    <tr>
-      <td>{{authorBookID}}</td>
-      <td>{{bookTitle}}</td>
-      <td>{{authorName}}</td>
-    </tr>
+      <tr>
+        <tr data-value={{this.authorBookID}}></tr>
+        <td>{{this.authorBookID}}</td>
+        <td>{{this.authorID}}</td>
+        <td>{{this.bookID}}</td>
+        <td><button
+                onclick="deleteUser({{this.authorBookID}})"
+                >Delete</button></td>
+      </tr>
     {{/each}}
   </tbody>
 </table>

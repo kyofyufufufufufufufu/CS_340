@@ -19,21 +19,25 @@
 <div class="form-spacing"></div>
 
 <h2>Authors List</h2>
-<table>
+<table id="authors_table">
   <thead>
     <tr>
-      <th><input type="checkbox" id="select-all" /></th>
       <th>ID</th>
       <th>Full Name</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
-    {{#each authors}}
-    <tr>
-      <td><input type="checkbox" class="select-row" data-author-id="{{authorID}}" /></td>
-      <td>{{authorID}}</td>
-      <td>{{authorName}}</td>
-    </tr>
+    {{#each data}}
+        <tr>
+        {{!-- <td><input type="checkbox" class="select-row" data-author-id="{{authorID}}" /></td> --}}
+        <td>{{this.authorID}}</td>
+        <td>{{this.authorName}}</td>
+        <td><button
+                    onclick="deleteUser({{this.authorID}})"
+                    >Delete</button></td>
+            </tr>
+        </tr>
     {{/each}}
   </tbody>
 </table>
