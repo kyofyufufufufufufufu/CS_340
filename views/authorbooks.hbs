@@ -15,26 +15,24 @@
 <hr />
 
 <h2>Author Books List</h2>
-<table id="authors_books_table">
+<table id="authors-books-table">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Author</th>
-      <th>Book</th>
-      <th>Delete</th>
+        <th>ID</th>
+        <th>Author Name</th>
+        <th>Book Title</th>
+        <th>Delete</th>
     </tr>
   </thead>
   <tbody>
     {{#each authorbooks}}
-      <tr>
-        <tr data-value="{{this.authorBookID}}"></tr>
+      <tr data-value={{this.authorBookID}}>
         <td>{{this.authorBookID}}</td>
         <td>{{this.authorID}}</td>
         <td>{{this.bookID}}</td>
-        <td><button
-                onclick="deleteUser({{this.authorBookID}})"
-                >Delete</button></td>
+        <td><button onclick="deleteAuthorBook({{this.authorBookID}})">Delete</button></td>
       </tr>
     {{/each}}
   </tbody>
 </table>
+<script src="./js/delete_authorbooks.js"></script>

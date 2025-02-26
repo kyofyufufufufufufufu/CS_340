@@ -240,6 +240,26 @@ app.get('/authorbooks', function(req, res) {
 
 });
 
+app.delete('/delete-author-book-ajax/', function(req,res,next){
+    let data = req.body;
+    let authorBookID = parseInt(data.authorBookID);
+    let deleteAuthorBooks = `DELETE FROM AuthorsofBooks WHERE authorBookID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteAuthorBooks, [authorBookID], function(error, rows, fields){
+        if (error) {
+
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
+});
+
 app.get('/bookgenres', function(req, res) {  
 
     let query1 = "SELECT * FROM GenresofBooks;";
