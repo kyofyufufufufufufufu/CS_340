@@ -98,6 +98,26 @@ app.get('/authors', function(req, res)
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
+app.delete('/delete-author-ajax/', function(req,res,next){
+    let data = req.body;
+    let authorID = parseInt(data.authorID);
+    let deleteAuthor = `DELETE FROM Authors WHERE authorID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteAuthor, [authorID], function(error, rows, fields){
+        if (error) {
+
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
+});
+
 app.get('/genres', function(req, res)
 {  
     let query1 = "SELECT * FROM Genres;";                    // Define our query

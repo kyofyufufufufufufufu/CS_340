@@ -1,12 +1,13 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <h1>Author Data</h1>
 
 <!-- Buttons for Create, Edit, and Delete -->
 <section>
     <button id="createAuthorBtn">Create New Author</button>
     <button id="editAuthorBtn">Edit Author</button>
-    <button id="deleteAuthorBtn">Delete Author</button>
+    {{!-- <button id="deleteAuthorBtn">Delete Author</button> --}}
 </section>
-
 
 <div class="form-spacing"></div>
 
@@ -19,30 +20,31 @@
 <div class="form-spacing"></div>
 
 <h2>Authors List</h2>
-<table id="authors_table">
+<table id="authors-table">
   <thead>
     <tr>
-      <th>ID</th>
-      <th>Full Name</th>
-      <th>Delete</th>
+        {{#each data.[0]}}
+        <th>
+            {{@key}}
+        </th>
+        {{/each}}
+        {{!-- <th>ID</th>
+        <th>Full Name</th> --}}
+        <th>Delete</th>
     </tr>
   </thead>
   <tbody>
     {{#each data}}
-        <tr>
-        {{!-- <td><input type="checkbox" class="select-row" data-author-id="{{authorID}}" /></td> --}}
+    <tr data-value={{this.authorID}}>
         <td>{{this.authorID}}</td>
         <td>{{this.authorName}}</td>
-        <td><button
-                    onclick="deleteUser({{this.authorID}})"
-                    >Delete</button></td>
-            </tr>
-        </tr>
+        <td><button onclick="deleteAuthor({{this.authorID}})">Delete</button></td>
+    </tr>
     {{/each}}
   </tbody>
 </table>
-
-<!-- Create Author Modal -->
+<script src="./js/delete_author.js"></script>
+{{!-- <!-- Create Author Modal -->
 <dialog id="createAuthorForm">
     <form action="/add-author" method="POST">
         <legend>Create New Author</legend>
@@ -72,10 +74,10 @@
             <button type="submit">Update</button>
         </div>
     </form>
-</dialog>
+</dialog> --}}
 
 <!-- Delete Author Modal -->
-<dialog id="deleteAuthorForm">
+{{!-- <dialog id="deleteAuthorForm">
     <form action="/delete-author" method="POST">
         <legend>Confirm Deletion</legend>
         <p>Are you sure you want to delete the author <strong id="deleteAuthorNameText"></strong>?</p>
@@ -87,9 +89,9 @@
             <button type="submit">Delete</button>
         </div>
     </form>
-</dialog>
+</dialog> --}}
 
-<script>
+{{!-- <script>
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons and modals
     const createAuthorBtn = document.getElementById("createAuthorBtn");
@@ -145,5 +147,5 @@ document.addEventListener("DOMContentLoaded", function () {
             this.closest("dialog").close();
         });
     });
-});
+}); --}}
 </script>
