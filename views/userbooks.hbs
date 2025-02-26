@@ -45,23 +45,26 @@
 <table>
   <thead>
     <tr>
-      <th></th>
       <th>ID</th>
       <th>User</th>
       <th>Book</th>
       <th>Status</th>
       <th>Rating</th>
+      <th>Delete</th>
     </tr>
   </thead>
   <tbody>
     {{#each userbooks}}
     <tr>
-      <th><input type="checkbox" id="select-all" /></th>
-      <td>{{userBookID}}</td>
-      <td>{{userName}}</td>
-      <td>{{bookTitle}}</td>
-      <td>{{userBookStatus}}</td>
-      <td>{{#if userBookRating}}{{userBookRating}} Stars{{else}}N/A{{/if}}</td>
+      <tr data-value="{{this.userBookID}}"></tr>
+      <td>{{this.userBookID}}</td>
+      <td>{{this.userID}}</td>
+      <td>{{this.bookID}}</td>
+      <td>{{this.userBookStatus}}</td>
+      <td>{{#if this.userBookRating}}{{this.userBookRating}} Stars{{else}}N/A{{/if}}</td>
+      <td><button
+                onclick="deleteUser({{this.userBookID}})"
+                >Delete</button></td>
     </tr>
     {{/each}}
   </tbody>

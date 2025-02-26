@@ -108,14 +108,60 @@ app.get('/genres', function(req, res)
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
-app.get('/userbooks', function(req, res)
-{  
-    let query1 = "SELECT * FROM UserBooks;";                    // Define our query
+app.get('/userbooks', function(req, res) {  
 
-    db.pool.query(query1, function(error, rows, fields){    // Execute the query
 
-        res.render('userbooks', {data: rows});                  // Render the index.hbs file, and also send the renderer
-    })                                                      // an object where 'data' is equal to the 'rows' we
+    let query1 = "SELECT * FROM UserBooks;";     
+
+    let query2 = "SELECT * FROM Users;";
+    
+    let query3 = "SELECT * FROM Books;";
+
+    db.pool.query(query1, function (error, rows, fields) {
+
+        let userbooks = rows;
+
+        db.pool.query(query2, function (error, rows, fields) {
+
+            let users = rows;
+            let usermap = {}
+
+            users.map(user => {
+                let id = parseInt(user.userID, 10);
+                usermap[id] = user["userName"]
+            })
+
+            userbooks = userbooks.map(userbook => {
+                return Object.assign(userbook, {userID: usermap[userbook.userID]})
+            })
+
+            db.pool.query(query3, function (error, rows, fields) {
+
+                if (error) {
+                    console.error("Error executing query1:", error);
+                    return res.status(500).send("Database error: Duplicate ID chosen");
+                }
+
+                let books = rows;
+                let bookmap = {}
+
+                books.map(book => {
+                    let id = parseInt(book.bookID, 10);
+                    bookmap[id] = book["bookTitle"];
+                })
+
+                userbooks = userbooks.map(userbook => {
+                    return Object.assign(userbook, {bookID: bookmap[userbook.bookID]})
+                })
+
+                return res.render('userbooks', {userbooks: userbooks, users: users, books: books});
+
+            });
+
+        });
+
+    });
+
 });
 
 app.get('/authorbooks', function(req, res) {  
