@@ -6,7 +6,6 @@
 <section>
     <button id="createAuthorBtn">Create New Author</button>
     <button id="editAuthorBtn">Edit Author</button>
-    {{!-- <button id="deleteAuthorBtn">Delete Author</button> --}}
 </section>
 
 <div class="form-spacing"></div>
@@ -43,18 +42,19 @@
     {{/each}}
   </tbody>
 </table>
-<script src="./js/delete_author.js"></script>
-{{!-- <!-- Create Author Modal -->
+
+
+<!-- Create Author Modal -->
 <dialog id="createAuthorForm">
-    <form action="/add-author" method="POST">
+    <form id = "add-author-form-ajax">
         <legend>Create New Author</legend>
         <fieldset>
-            <label for="authorName">Full Name:</label>
-            <input type="text" id="authorName" name="authorName" required>
+            <label for="input-AuthorName">Full Name:</label>
+            <input type="text" id="input-AuthorName" name="input-AuthorName" required>
         </fieldset>
         <div class="formButtons">
+            <input type="submit">
             <button type="button" id="closeForm">Cancel</button>
-            <button type="submit">Add Author</button>
         </div>
     </form>
 </dialog>
@@ -74,24 +74,9 @@
             <button type="submit">Update</button>
         </div>
     </form>
-</dialog> --}}
+</dialog> 
 
-<!-- Delete Author Modal -->
-{{!-- <dialog id="deleteAuthorForm">
-    <form action="/delete-author" method="POST">
-        <legend>Confirm Deletion</legend>
-        <p>Are you sure you want to delete the author <strong id="deleteAuthorNameText"></strong>?</p>
-        
-        <input type="hidden" id="deleteAuthorId" name="authorId">
-
-        <div class="formButtons">
-            <button type="button" id="closeForm">Cancel</button>
-            <button type="submit">Delete</button>
-        </div>
-    </form>
-</dialog> --}}
-
-{{!-- <script>
+<script>
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons and modals
     const createAuthorBtn = document.getElementById("createAuthorBtn");
@@ -124,28 +109,16 @@ document.addEventListener("DOMContentLoaded", function () {
         editAuthorForm.showModal();
     });
 
-    deleteAuthorBtn?.addEventListener("click", () => {
-        const selectedRow = document.querySelector('input.select-row:checked');
-        
-        // If no checkbox is selected, show an alert
-        if (!selectedRow) {
-            alert("Please select an author to delete.");
-            return;
-        }
-
-        // If a checkbox is selected, show the delete confirmation modal
-        const tr = selectedRow.closest("tr");
-        document.getElementById("deleteAuthorId").value = selectedRow.getAttribute("data-author-id");
-        document.getElementById("deleteAuthorNameText").textContent = tr.children[2].textContent;
-
-        deleteAuthorForm.showModal();
-    });
-
     // Close modals when close button is clicked
     closeButtons.forEach(button => {
         button.addEventListener("click", function () {
             this.closest("dialog").close();
         });
     });
-}); --}}
+});
 </script>
+
+
+<script src="./js/delete_author.js"></script>
+<script src="./js/add_author.js"></script>
+
