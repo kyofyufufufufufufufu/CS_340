@@ -44,6 +44,8 @@ addAuthorBookForm.addEventListener("submit", function (e) {
             // Clear the input fields for another transaction
             inputAuthorID.value = '';
             inputBookID.value = '';
+            //Code Adapted From: https://www.geeksforgeeks.org/how-to-refresh-a-page-using-jquery/
+            location.reload()
         }
         else if (xhttp.readyState == 4 && xhttp.status != 200) {
             console.log("There was an error with the input.")
