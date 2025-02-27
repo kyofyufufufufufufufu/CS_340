@@ -92,19 +92,68 @@
     </form>
 </dialog>
 
-<!-- Delete User Modal -->
-{{!-- <dialog id="deleteUserForm">
-    <form action="/delete-user" method="POST">
-        <legend>Confirm Deletion</legend>
-        <p>Are you sure you want to delete user <strong id="deleteUserNameText"></strong>?</p>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // Get buttons
+    const createUserBtn = document.getElementById("createUserBtn");
+    const editUserBtn = document.getElementById("editUserBtn");
+    const deleteUserBtn = document.getElementById("deleteUserBtn");
+
+    // Get modals
+    const createUserForm = document.getElementById("createUserForm");
+    const editUserForm = document.getElementById("editUserForm");
+    const deleteUserForm = document.getElementById("deleteUserForm");
+
+    // Get all close buttons
+    const closeButtons = document.querySelectorAll("#closeForm");
+
+    // Open modals when buttons are clicked
+    createUserBtn?.addEventListener("click", () => createUserForm.showModal());
+
+    //Edit Users event listener
+    editUserBtn?.addEventListener("click", () => {
+        const selectedRow = document.querySelector('input.select-row:checked');
+
+        // If no checkbox is selected, show an alert
+        if (!selectedRow) {
+            alert("Please select a user to edit.");
+            return;
+        }
+
+        // If a checkbox is selected, populate the fields and open the modal
+        const tr = selectedRow.closest("tr");
+        document.getElementById("editUserId").value = selectedRow.getAttribute("data-user-id");
+        document.getElementById("editUserName").value = tr.children[2].textContent;
+        document.getElementById("editPassword").value = ""; // You can leave this empty if password isn't part of the initial edit
+        document.getElementById("editEmail").value = tr.children[4].textContent;
+
+        editUserForm.showModal();
+    });
+    //Delete Users event listener
+    deleteUserBtn?.addEventListener("click", () => {
+        const selectedRow = document.querySelector('input.select-row:checked');
         
-        <input type="hidden" id="deleteUserId" name="userId">
+        // If no checkbox is selected, show an alert
+        if (!selectedRow) {
+            alert("Please select a user to delete.");
+            return;
+        }
 
-        <div class="formButtons">
-            <button type="button" id="closeForm">Cancel</button>
-            <button type="submit">Delete</button>
-        </div>
-    </form>
-</dialog> --}}
+        // If a checkbox is selected, show the delete confirmation modal
+        const tr = selectedRow.closest("tr");
+        document.getElementById("deleteUserId").value = selectedRow.getAttribute("data-user-id");
+        document.getElementById("deleteUserNameText").textContent = tr.children[2].textContent;
 
-<script src="/js/users.js"></script>
+        deleteUserForm.showModal();
+    });
+
+    // Close modals when close button is clicked
+    closeButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            this.closest("dialog").close();
+        });
+    });
+});
+</script>
+
+<script src="/js/add_users.js"></script>

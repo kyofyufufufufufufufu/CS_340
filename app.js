@@ -47,7 +47,7 @@ app.post('/add-user-ajax', function(req, res) {
     let data = req.body;
 
     // Create the query and run it on the database
-    query1 = `INSERT INTO Users (userName, password, email) VALUES ('${input-userName}', '${input-password}', '${input-email}')`;
+    query1 = `INSERT INTO Users (userName, password, email) VALUES ('${data.userName}', '${data.password}', '${data.email}')`;
     db.pool.query(query1, function(error, rows, fields) {
 
         // Check to see if there was an error
