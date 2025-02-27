@@ -1,3 +1,5 @@
+// Adapted from CS340 Nodejs Starter code: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%200%20-%20Setting%20Up%20Node.js
+
 // Create an Express app
 const express = require('express');                 // We are using the express library for the web server
 const app     = express(); 
@@ -277,6 +279,46 @@ app.get('/authorbooks', function(req, res) {
 
     });
 
+});
+
+app.post('/add-author-book-ajax', function(req, res) 
+{
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+
+    // Create the query and run it on the database
+    query1 = `INSERT INTO AuthorsofBooks (authorID, bookID) VALUES ('${data.authorID}', '${data.bookID}')`;
+    db.pool.query(query1, function(error, rows, fields){
+
+        // Check to see if there was an error
+        if (error) {
+
+            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+            console.log(error)
+            res.sendStatus(400);
+        }
+        else
+        {
+            // If there was no error, perform a SELECT * on bsg_people
+            query2 = `SELECT * FROM AuthorsofBooks;`;
+            db.pool.query(query2, function(error, rows, fields){
+
+                // If there was an error on the second query, send a 400
+                if (error) {
+                    
+                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+                    console.log(error);
+                    res.sendStatus(400);
+                }
+                // If all went well, send the results of the query back.
+                else
+                {
+                    // res.send(rows);
+                    res.redirect('/')
+                }
+            })
+        }
+    })
 });
 
 

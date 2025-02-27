@@ -1,3 +1,5 @@
+{{!-- Adapted from CS340 Nodejs Starter code: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%204%20-%20Dynamically%20Displaying%20Data --}}
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <h1>Author Data</h1>
@@ -46,7 +48,7 @@
 
 <!-- Create Author Modal -->
 <dialog id="createAuthorForm">
-    <form id = "add-author-form-ajax">
+    <form id = "add-author-form-ajax" method="POST" action="add-author-form-ajax">
         <legend>Create New Author</legend>
         <fieldset>
             <label for="input-AuthorName">Full Name:</label>

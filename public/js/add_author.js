@@ -1,3 +1,5 @@
+//{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
+
 // Get the objects we need to modify
 let addAuthorForm = document.getElementById('add-author-form-ajax');
 
@@ -47,7 +49,6 @@ addAuthorForm.addEventListener("submit", function (e) {
     xhttp.send(JSON.stringify(data));
 
 })
-
 
 // Creates a single row from an Object representing a single record from 
 // bsg_people

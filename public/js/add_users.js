@@ -1,3 +1,5 @@
+//{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
+
 /// Get the objects we need to modify
 let addUserForm = document.getElementById('add-user-form-ajax');
 

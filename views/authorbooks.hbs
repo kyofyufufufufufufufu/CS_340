@@ -1,15 +1,25 @@
+{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
+
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <h1>Author of Books Data</h1>
 
-<form action="/add-authorbook" method="POST">
-    <label for="book">Book:</label>
-    <input type="text" id="bookTitle" name="bookTitle" required>
-
-    <label for="book">Author:</label>
-    <input type="text" id="authorName" name="authorName" required>
-
-    <button type="submit">Assign Author</button>
+<form id="add-author-book-form-ajax" method="POST" action="/add-author-book-form-ajax">
+    <label for="input-AuthorName">Author:</label>
+    <select name="input-AuthorName" id="input-AuthorName">
+      <option value="">Select an Author</option>
+      {{#each authors}}
+        <option value="{{this.authorID}}">{{this.authorName}}</option>
+      {{/each}}
+    </select>
+    <label for="input-BookTitle">Book:</label>
+    <select name="input-BookTitle" id="input-BookTitle">
+      <option value="">Select a Book</option>
+      {{#each books}}
+        <option value="{{this.bookID}}">{{this.bookTitle}}</option>
+      {{/each}}
+    </select>
+    <input type="submit">
 </form>
 
 <hr />
@@ -35,4 +45,5 @@
     {{/each}}
   </tbody>
 </table>
+<script src="./js/add_authorbooks.js"></script>
 <script src="./js/delete_authorbooks.js"></script>

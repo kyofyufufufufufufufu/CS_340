@@ -1,3 +1,5 @@
+//{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
+
 function deleteAuthorBook(authorBookID) {
     let link = '/delete-author-book-ajax/';
     let data = {
