@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+{{!-- Adapted from CS340 Nodejs Starter code: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%204%20-%20Dynamically%20Displaying%20Data --}}
+
+>>>>>>> origin/krystalBranch
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
 <h1>Author Data</h1>
@@ -19,13 +24,15 @@
 
 <!-- Table for displaying authors -->
 <h2>Authors List</h2>
-<table id="author_table">
+<table id="authors-table">
   <thead>
     <tr>
-      <!--<th><input type="checkbox" id="select-all" /></th> -->
-      <th>ID</th>
-      <th>Author</th>
-      <th>Actions</th>
+        {{#each data.[0]}}
+        <th>
+            {{@key}}
+        </th>
+        {{/each}}
+        <th>Actions</th>
     </tr>
   </thead>
 

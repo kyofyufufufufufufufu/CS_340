@@ -80,7 +80,7 @@ addAuthorForm.addEventListener("submit", function (e) {
 
 // Function to add a new row to the table (new author)
 function addRowToTable(newAuthor) {
-    let currentTable = document.getElementById("author_table");
+    let currentTable = document.getElementById("authors-table");
 
     // Create elements for new row
     let row = document.createElement("TR");
