@@ -65,6 +65,9 @@ addAuthorForm.addEventListener("submit", function (e) {
                     // Clear input fields
                     inputAuthorName.value = '';
 
+                    //Reloads page to allow styling to take effect for new insertion.
+                    location.reload();
+
                     // Close the modal
                     document.getElementById("createAuthorForm").close();
                 } else {
