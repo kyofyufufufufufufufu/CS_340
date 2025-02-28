@@ -100,6 +100,44 @@ app.get('/authors', function(req, res)
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
+app.post('/add-author-ajax', (req, res) => {
+    let data = req.body;
+    let query = `INSERT INTO Authors (authorName) VALUES (?)`;
+    db.pool.query(query, [data.authorName], (error, rows) => {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+        // Send back the updated list of authors
+        db.pool.query("SELECT * FROM Authors;", (error, rows) => {
+            if (error) return res.sendStatus(400);
+            res.json({ success: true, authors: rows });
+        });
+    });
+});
+
+//UPDATE/EDIT Authors
+app.post('/edit-author-ajax', (req, res) => {
+    const { authorID, authorName } = req.body;
+    
+    console.log('Received authorID:', authorID); // Log authorID
+    console.log('Received authorName:', authorName); // Log authorName
+
+    const sql = "UPDATE Authors SET authorName = ? WHERE authorID = ?";
+    db.pool.query(sql, [authorName, authorID], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.json({ success: false });
+        }
+
+        if (results.affectedRows > 0) {
+            return res.json({ success: true });
+        } else {
+            return res.json({ success: false });
+        }
+    });
+});
+
 
 app.delete('/delete-author-ajax/', function(req,res,next){
     let data = req.body;

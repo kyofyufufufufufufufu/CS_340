@@ -5,7 +5,6 @@
 <!-- Button to open the modal -->
 <section class="user_buttons">
     <button id="createUserBtn">Create New User</button>
-    <button id="editUserBtn">Edit Existing User</button>
 </section>
 
 <div class="form-spacing"></div>
@@ -23,12 +22,11 @@
 <table id="user_table">
   <thead>
     <tr>
-      {{!-- <th><input type="checkbox" id="select-all" /></th> --}}
       <th>ID</th>
       <th>Username</th>
       <th>Password</th>
       <th>Email</th>
-      <th>Delete</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -38,7 +36,10 @@
         <td>{{this.userName}}</td>
         <td>{{this.password}}</td>
         <td>{{this.email}}</td>
-        <td><button
+        <td><button 
+                onclick="editUser({{this.userID}})"
+                >Edit</button>
+            <button
                 onclick="deleteUser({{this.userID}})"
                 >Delete</button></td>
         </tr>
