@@ -1,3 +1,5 @@
+//{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
+
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons
     const createAuthorBtn = document.getElementById("createAuthorBtn");
