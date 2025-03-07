@@ -44,7 +44,7 @@
 </form>
 
 <h2>User Book List</h2>
-<table>
+<table id="userbooks_table">
   <thead>
     <tr>
       <th>ID</th>
@@ -56,8 +56,8 @@
     </tr>
   </thead>
   <tbody>
-    {{#each userbooks}}
-      <tr data-value={{this.userBookID}}></tr>
+      {{#each userbooks}}
+      <tr data-value={{this.userBookID}}>
         <td>{{this.userBookID}}</td>
         <td>{{this.userID}}</td>
         <td>{{this.bookID}}</td>
@@ -66,6 +66,9 @@
         <td><button
                   onclick="deleteUserBook({{this.userBookID}})"
                   >Delete</button></td>
-    {{/each}}
+      </tr>
+      {{/each}}
   </tbody>
 </table>
+
+<script src="./js/userbooks.js"></script>

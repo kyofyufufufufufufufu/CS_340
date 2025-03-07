@@ -18,7 +18,7 @@
 <hr/ >
 
 <h2>Book Genres List</h2>
-<table id="book_genres_table">
+<table id="bookgenres_table">
   <thead>
     <tr>
       <th>ID</th>
@@ -28,16 +28,17 @@
     </tr>
   </thead>
   <tbody>
-    {{#each bookgenres}}
-      <tr>
-        <tr data-value={{this.genreBookID}}></tr>
+      {{#each bookgenres}}
+      <tr data-value={{this.genreBookID}}>
         <td>{{this.genreBookID}}</td>
         <td>{{this.genreID}}</td>
         <td>{{this.bookID}}</td>
         <td><button
-                  onclick="deleteUser({{this.genreBookID}})"
+                  onclick="deleteBookGenre({{this.genreBookID}})"
                   >Delete</button></td>
       </tr>
-    {{/each}}
+      {{/each}}
   </tbody>
 </table>
+
+<script src="./js/bookgenres.js"></script>
