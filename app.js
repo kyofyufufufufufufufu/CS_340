@@ -114,7 +114,7 @@ app.delete('/delete-book-ajax/', function(req,res,next) {
     let deleteBook = `DELETE FROM Books WHERE bookID = ?`;
     
     // Run the 1st query
-    db.pool.query(deleteBook, [bookID], function(error, rows, fields){
+    db.pool.query(deleteBook, [bookID], function(error, rows, fields) {
         if (error) {
 
         // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
@@ -128,8 +128,7 @@ app.delete('/delete-book-ajax/', function(req,res,next) {
     })
 });
 
-app.get('/authors', function(req, res)
-{  
+app.get('/authors', function(req, res) {  
     let query1 = "SELECT * FROM Authors;";                    // Define our query
 
     db.pool.query(query1, function(error, rows, fields){    // Execute the query
