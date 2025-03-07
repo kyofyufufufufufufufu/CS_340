@@ -85,15 +85,39 @@ addAuthorForm.addEventListener("submit", function (e) {
     xhttp.send(JSON.stringify(data));
 });
 
+function deleteAuthor(authorID) {
+// Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
+    if (window.confirm("Are you sure you want to delete this Author from the database?")) {
+        let link = '/delete-author-ajax/';
+        let data = {
+            authorID: authorID
+        };
+    
+        $.ajax({
+        url: link,
+        type: 'DELETE',
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        success: function(result) {
+            deleteRow(authorID);
+        }
+        });
+    }
+}
+      
+function deleteRow(authorID){
+    let table = document.getElementById("author_table");
+    for (let i = 0, row; row = table.rows[i]; i++) {
+        if (table.rows[i].getAttribute("data-value") == authorID) {
+            table.deleteRow(i);
+            break;
+        }
+    }
+}
+
 // Function to add a new row to the table (new author)
 addRowToTable = (newAuthor) => {
     let currentTable = document.getElementById("author_table");
-
-    // let newRowIndex = currentTable.rows.length;
-
-    // // Get a reference to the new row from the database query (last object)
-    // let parsedData = JSON.parse(newAuthor);
-    // let newRow = parsedData[parsedData.length - 1]
 
     // Create elements for new row
     let row = document.createElement("TR");
@@ -189,3 +213,6 @@ function updateAuthorInTable(authorID, authorName) {
     let authorNameCell = row.querySelector("td:nth-child(2)");
     authorNameCell.innerText = authorName;  // Update the author's name in the table
 }
+
+
+    

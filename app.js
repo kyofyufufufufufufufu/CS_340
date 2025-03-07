@@ -34,8 +34,7 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
 });
 
-app.get('/users', function(req, res)
-    {  
+app.get('/users', function(req, res) {  
         let query1 = "SELECT * FROM Users;";                    // Define our query
 
         db.pool.query(query1, function(error, rows, fields){    // Execute the query
@@ -80,8 +79,27 @@ app.post('/add-user-ajax', function(req, res) {
     })
 });
 
-app.get('/books', function(req, res)
-    {  
+app.delete('/delete-user-ajax/', function(req,res,next) {
+    let data = req.body;
+    let userID = parseInt(data.userID);
+    let deleteUser = `DELETE FROM Users WHERE userID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteUser, [userID], function(error, rows, fields){
+        if (error) {
+
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
+});
+
+app.get('/books', function(req, res) {  
         let query1 = "SELECT * FROM Books;";                    // Define our query
 
         db.pool.query(query1, function(error, rows, fields){    // Execute the query
@@ -89,6 +107,26 @@ app.get('/books', function(req, res)
             res.render('books', {data: rows});                  // Render the index.hbs file, and also send the renderer
         })                                                      // an object where 'data' is equal to the 'rows' we
     });
+
+app.delete('/delete-book-ajax/', function(req,res,next) {
+    let data = req.body;
+    let bookID = parseInt(data.bookID);
+    let deleteBook = `DELETE FROM Books WHERE bookID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteBook, [bookID], function(error, rows, fields){
+        if (error) {
+
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
+});
 
 app.get('/authors', function(req, res)
 {  
@@ -322,7 +360,7 @@ app.post('/add-author-book-ajax', function(req, res)
 
 
 
-app.delete('/delete-author-book-ajax/', function(req,res,next){
+app.delete('/delete-author-book-ajax', function(req,res,next){
     let data = req.body;
     let authorBookID = parseInt(data.authorBookID);
     let deleteAuthorBooks = `DELETE FROM AuthorsofBooks WHERE authorBookID = ?`;
