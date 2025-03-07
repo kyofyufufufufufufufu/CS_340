@@ -22,23 +22,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function deleteBook(bookID) {
     // Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
-        if (window.confirm("Are you sure you want to delete this Book from the database?")) {
-          let link = '/delete-book-ajax/';
-          let data = {
-            bookID: bookID
-          };
-      
-          $.ajax({
-            url: link,
-            type: 'DELETE',
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            success: function(result) {
-              deleteRow(bookID);
+    if (window.confirm("Are you sure you want to delete this Book from the database?")) {
+        let link = '/delete-book-ajax/';
+        let data = {
+        bookID: bookID
+        };
+    
+    $.ajax({
+        url: link,
+        type: 'DELETE',
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        success: function(result) {
+            deleteRow(bookID);
+        },
+        //Code source: https://stackoverflow.com/questions/1637019/how-to-get-the-jquery-ajax-error-response-text
+        error: function(xhr, status, error) {
+            if (xhr.status == 400) {
+                alert("Can't delete this book because it's referenced in userbooks.")
             }
-            });
+            else {
+                alert("An error occured: " + error)
+            }
         }
-      }
+
+    });
+    }
+}
       
 function deleteRow(bookID){
     let table = document.getElementById("books_table");
