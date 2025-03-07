@@ -16,7 +16,6 @@
 <table id="genres_table">
   <thead>
     <tr>
-      {{!-- <th><input type="checkbox" id="select-all" /></th> --}}
       <th>ID</th>
       <th>Genre Category</th>
       <th>Delete</th>
@@ -24,14 +23,15 @@
   </thead>
   <tbody>
     {{#each data}}
-      <tr>
-        {{!-- <td><input type="checkbox" class="select-row" /></td> --}}
+    <tr data-value={{this.genreID}}>
         <td>{{this.genreID}}</td>
         <td>{{this.genreName}}</td>
         <td><button
-                  onclick="deleteUser({{this.genreID}})"
-                  >Delete</button></td>
-      </tr>
+                onclick="deleteGenre({{this.genreID}})"
+                >Delete</button>
+        </td>
+    </tr>
     {{/each}}
   </tbody>
 </table>
+<script src="./js/genres.js"></script>

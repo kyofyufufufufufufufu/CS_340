@@ -41,7 +41,7 @@ app.get('/users', function(req, res) {
 
             res.render('users', {data: rows});                  // Render the index.hbs file, and also send the renderer
         })                                                      // an object where 'data' is equal to the 'rows' we
-    });           
+});           
 
 app.post('/add-user-ajax', function(req, res) {
     // Capture the incoming data and parse it back to a JS object
@@ -106,7 +106,7 @@ app.get('/books', function(req, res) {
 
             res.render('books', {data: rows});                  // Render the index.hbs file, and also send the renderer
         })                                                      // an object where 'data' is equal to the 'rows' we
-    });
+});
 
 app.delete('/delete-book-ajax/', function(req,res,next) {
     let data = req.body;
@@ -176,7 +176,7 @@ app.post('/edit-author-ajax', (req, res) => {
 });
 
 
-app.delete('/delete-author-ajax/', function(req,res,next){
+app.delete('/delete-author-ajax/', function(req,res,next) {
     let data = req.body;
     let authorID = parseInt(data.authorID);
     let deleteAuthor = `DELETE FROM Authors WHERE authorID = ?`;
@@ -196,8 +196,7 @@ app.delete('/delete-author-ajax/', function(req,res,next){
     })
 });
 
-app.get('/genres', function(req, res)
-{  
+app.get('/genres', function(req, res) {  
     let query1 = "SELECT * FROM Genres;";                    // Define our query
 
     db.pool.query(query1, function(error, rows, fields){    // Execute the query
@@ -206,8 +205,27 @@ app.get('/genres', function(req, res)
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
-app.get('/userbooks', function(req, res) {  
+app.delete('/delete-genre-ajax/', function(req,res,next) {
+    let data = req.body;
+    let genreID = parseInt(data.genreID);
+    let deleteGenre = `DELETE FROM Genres WHERE genreID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteGenre, [genreID], function(error, rows, fields){
+        if (error) {
 
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
+});
+
+app.get('/userbooks', function(req, res) {  
 
     let query1 = "SELECT * FROM UserBooks;";     
 
@@ -262,8 +280,27 @@ app.get('/userbooks', function(req, res) {
 
 });
 
-app.get('/authorbooks', function(req, res) {  
+app.delete('/delete-userbook-ajax/', function(req,res,next) {
+    let data = req.body;
+    let userBookID = parseInt(data.userBookID);
+    let deleteUserBook = `DELETE FROM UserBooks WHERE userBookID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteUserBook, [userBookID], function(error, rows, fields){
+        if (error) {
 
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
+});
+
+app.get('/authorbooks', function(req, res) {  
 
     let query1 = "SELECT * FROM AuthorsofBooks;";     
 
@@ -318,8 +355,7 @@ app.get('/authorbooks', function(req, res) {
 
 });
 
-app.post('/add-author-book-ajax', function(req, res) 
-{
+app.post('/add-author-book-ajax', function(req, res) {
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
@@ -359,7 +395,7 @@ app.post('/add-author-book-ajax', function(req, res)
 
 
 
-app.delete('/delete-author-book-ajax', function(req,res,next){
+app.delete('/delete-author-book-ajax', function(req,res,next) {
     let data = req.body;
     let authorBookID = parseInt(data.authorBookID);
     let deleteAuthorBooks = `DELETE FROM AuthorsofBooks WHERE authorBookID = ?`;
@@ -432,6 +468,26 @@ app.get('/bookgenres', function(req, res) {
 
     });
 
+});
+
+app.delete('/delete-bookgenre-ajax/', function(req,res,next) {
+    let data = req.body;
+    let genreBookID = parseInt(data.genreBookID);
+    let deleteBookGenre = `DELETE FROM GenresofBooks WHERE genreBookID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteBookGenre, [genreBookID], function(error, rows, fields) {
+        if (error) {
+
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
 });
 
 
