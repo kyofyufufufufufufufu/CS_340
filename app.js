@@ -12,8 +12,12 @@ PORT = 8764;
 // Database
 const db      = require('./database/db-connector')
 
+const fs = require('fs');
+const path = require('path');
+
 const { engine } = require('express-handlebars');
 var exphbs = require('express-handlebars');     
+const { equal } = require('assert');
 app.engine('.hbs', engine({extname: ".hbs"}));  
 app.set('view engine', '.hbs');   
 
@@ -32,6 +36,30 @@ hbs.handlebars.registerHelper('isNotEqual', function (a, b, options) {
 // Routes
 app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
+});
+
+app.get('/search-user', function(req, res)
+{
+    let query1;
+    
+    if (req.query.userName === undefined)
+    {
+        query1 = "SELECT * FROM Users;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Users WHERE userName LIKE "${req.query.userName}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let user = rows;
+
+        return res.render('users', {data: user});
+
+    })
+
 });
 
 app.get('/users', function(req, res) {  
@@ -108,6 +136,30 @@ app.get('/books', function(req, res) {
         })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
+app.get('/search-book', function(req, res)
+{
+    let query1;
+    
+    if (req.query.bookTitle === undefined)
+    {
+        query1 = "SELECT * FROM Books;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Books WHERE bookTitle LIKE "${req.query.bookTitle}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let book = rows;
+
+        return res.render('books', {data: book});
+
+    })
+
+});
+
 app.delete('/delete-book-ajax/', function(req,res,next) {
     let data = req.body;
     let bookID = parseInt(data.bookID);
@@ -135,6 +187,30 @@ app.get('/authors', function(req, res) {
 
         res.render('authors', {data: rows});                  // Render the index.hbs file, and also send the renderer
     })                                                      // an object where 'data' is equal to the 'rows' we
+});
+
+app.get('/search-author', function(req, res)
+{
+    let query1;
+    
+    if (req.query.authorName === undefined)
+    {
+        query1 = "SELECT * FROM Authors;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Authors WHERE authorName LIKE "${req.query.authorName}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let author = rows;
+
+        return res.render('authors', {data: author});
+
+    })
+
 });
 
 app.post('/add-author-ajax', (req, res) => {
@@ -203,6 +279,30 @@ app.get('/genres', function(req, res) {
 
         res.render('genres', {data: rows});                  // Render the index.hbs file, and also send the renderer
     })                                                      // an object where 'data' is equal to the 'rows' we
+});
+
+app.get('/search-genre', function(req, res)
+{
+    let query1;
+    
+    if (req.query.genreName === undefined)
+    {
+        query1 = "SELECT * FROM Genres;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Genres WHERE genreName LIKE "${req.query.genreName}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let genre = rows;
+
+        return res.render('genres', {data: genre});
+
+    })
+
 });
 
 app.delete('/delete-genre-ajax/', function(req,res,next) {
@@ -469,6 +569,7 @@ app.get('/bookgenres', function(req, res) {
     });
 
 });
+
 
 app.delete('/delete-bookgenre-ajax/', function(req,res,next) {
     let data = req.body;

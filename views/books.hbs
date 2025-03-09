@@ -12,9 +12,12 @@
 <div class="form-spacing"></div>
 
 <!-- Search Form -->
-<form action="/search-book" method="POST">
-    <input type="text" id="bookTitle" name="bookTitle" required>
-    <button type="submit">Search</button>
+<form id="search-book" method="GET" action="/search-book">
+    <label for="input-bookTitle">Search by Book Title</label>
+    <input type="text" name="bookTitle" id="input-bookTitle-html">
+
+    <input type="submit" value="Search">
+    <a href="/"><button>Reset</button></a>
 </form>
 
 <div class="form-spacing"></div>
