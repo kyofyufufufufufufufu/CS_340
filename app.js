@@ -341,8 +341,9 @@ app.get('/userbooks', function(req, res) {
                UserBooks.userBookRating
         FROM UserBooks
         JOIN Users ON UserBooks.userID = Users.userID
-        JOIN Books ON UserBooks.bookID = Books.bookID;
+        LEFT JOIN Books ON UserBooks.bookID = Books.bookID;
     `;
+
 
     db.pool.query(query, function (error, userbooks) {
         if (error) {

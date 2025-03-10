@@ -51,7 +51,7 @@
       <tr data-value="{{this.userBookID}}">
         <td>{{this.userBookID}}</td>
         <td>{{this.userName}}</td>
-        <td>{{this.bookTitle}}</td>
+        <td>{{#if this.bookTitle}}{{this.bookTitle}}{{else}}N/A{{/if}}</td>
         <td>{{this.userBookStatus}}</td>
         <td>{{#if this.userBookRating}}{{this.userBookRating}} Stars{{else}}N/A{{/if}}</td>
         <td>
