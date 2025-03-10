@@ -24,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function () {
 // Get the form for adding an author
 let addAuthorForm = document.getElementById('add-author-form-ajax');
 
-// Modify form behavior
 addAuthorForm.addEventListener("submit", function (e) {
     // Prevent default form submission
     e.preventDefault();
@@ -43,32 +42,22 @@ addAuthorForm.addEventListener("submit", function (e) {
     // Prepare data to send
     let data = { authorName: authorNameValue };
 
-    // Set up AJAX request
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/add-author-ajax", true);
     xhttp.setRequestHeader("Content-type", "application/json");
 
-    // Handle AJAX response
     xhttp.onreadystatechange = () => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-            // Debugging step: log the raw response to check the format
-            console.log("Response from server:", xhttp.response);
-
             try {
                 let response = JSON.parse(xhttp.response);
-                console.log("Parsed response:", response); // Check the structure of the response
+                console.log("Parsed response:", response);
 
                 if (response.success) {
-                    // Add only the new author to the table (using the first element in authors array)
                     addRowToTable(response.authors[response.authors.length - 1]);
 
                     // Clear input fields
                     inputAuthorName.value = '';
-
-                    //Reloads page to allow styling to take effect for new insertion.
                     location.reload();
-
-                    // Close the modal
                     document.getElementById("createAuthorForm").close();
                 } else {
                     console.error("Failed to add author.");
@@ -115,7 +104,7 @@ function deleteRow(authorID){
     }
 }
 
-// Function to add a new row to the table (new author)
+// Add new author row to table
 addRowToTable = (newAuthor) => {
     let currentTable = document.getElementById("author_table");
 
@@ -126,11 +115,10 @@ addRowToTable = (newAuthor) => {
     let authorNameCell = document.createElement("TD");
     let actionsCell = document.createElement("TD");
 
-    // Fill cells with data
     authorIDCell.innerText = newAuthor.authorID;
     authorNameCell.innerText = newAuthor.authorName;
 
-    // Add edit & delete buttons
+    // Add edit and delete buttons
     let editButton = document.createElement("button");
     editButton.textContent = "Edit";
     editButton.onclick = function () {
@@ -143,47 +131,39 @@ addRowToTable = (newAuthor) => {
         deleteAuthor(newAuthor.authorID);
     };
 
-    // Append buttons to actions cell
     actionsCell.appendChild(editButton);
     actionsCell.appendChild(deleteButton);
 
-    // Append cells to row
     row.appendChild(authorIDCell);
     row.appendChild(authorNameCell);
     row.appendChild(actionsCell);
 
     row.setAttribute('data-value', newAuthor.authorID); // Unique identifier
 
-    // Append row to table
     currentTable.appendChild(row);
 }
 
 function editAuthor(authorID) {
-    // Prefill form
     let row = document.querySelector(`tr[data-value="${authorID}"]`);
     let authorName = row.querySelector("td:nth-child(2)").innerText;
 
-    // Open modal
     let editModal = document.getElementById("editAuthorForm");
     document.getElementById("editAuthorId").value = authorID;
     document.getElementById("editAuthorName").value = authorName;
     editModal.showModal();
 }
 
-// Handle form submission for editing an author
+// EDIT author
 let editAuthorForm = document.getElementById("editAuthorForm");
 
 editAuthorForm.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    // Get form fields
     let authorID = document.getElementById("editAuthorId").value;
     let authorName = document.getElementById("editAuthorName").value;
 
-    // Prepare data to send
     let data = { authorID: authorID, authorName: authorName };
 
-    // Set up AJAX request to update the author
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/edit-author-ajax", true);
     xhttp.setRequestHeader("Content-type", "application/json");
@@ -207,12 +187,9 @@ editAuthorForm.addEventListener("submit", function (e) {
     xhttp.send(JSON.stringify(data));
 });
 
-// Function to update the author in the table after successful update
+// function to update after edit
 function updateAuthorInTable(authorID, authorName) {
     let row = document.querySelector(`tr[data-value="${authorID}"]`);
     let authorNameCell = row.querySelector("td:nth-child(2)");
-    authorNameCell.innerText = authorName;  // Update the author's name in the table
+    authorNameCell.innerText = authorName;
 }
-
-
-    

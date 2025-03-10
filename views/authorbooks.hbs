@@ -1,49 +1,82 @@
-{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
-
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
-<h1>Author of Books Data</h1>
-
-<form id="add-author-book-form-ajax" method="POST" action="/add-author-book-form-ajax">
+<!-- Create Form -->
+<h1>Author Book Data</h1>
+<form id="add-author-book-form-ajax" method="POST" action="/add-author-book-ajax">
     <label for="input-AuthorName">Author:</label>
     <select name="input-AuthorName" id="input-AuthorName">
-      <option value="">Select an Author</option>
-      {{#each authors}}
+        <option value="">Select an Author</option>
+        {{#each authors}}
         <option value="{{this.authorID}}">{{this.authorName}}</option>
-      {{/each}}
+        {{/each}}
     </select>
+
     <label for="input-BookTitle">Book:</label>
     <select name="input-BookTitle" id="input-BookTitle">
-      <option value="">Select a Book</option>
-      {{#each books}}
+        <option value="">Select a Book</option>
+        {{#each books}}
         <option value="{{this.bookID}}">{{this.bookTitle}}</option>
-      {{/each}}
+        {{/each}}
     </select>
-    <input type="submit">
-</form>
 
-<hr />
+    <input type="submit" value="Add Relationship">
+</form>
 
 <h2>Author Books List</h2>
 <table id="authors-books-table">
-  <thead>
-    <tr>
-        <th>ID</th>
-        <th>Author Name</th>
-        <th>Book Title</th>
-        <th>Delete</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each authorbooks}}
-      <tr data-value={{this.authorBookID}}>
-        <td>{{this.authorBookID}}</td>
-        <td>{{this.authorID}}</td>
-        <td>{{this.bookID}}</td>
-        <td><button onclick="deleteAuthorBook({{this.authorBookID}})">Delete</button></td>
-      </tr>
-    {{/each}}
-  </tbody>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Author Name</th>
+            <th>Book Title</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each authorbooks}}
+        <tr data-value="{{this.authorBookID}}">
+            <td>{{this.authorBookID}}</td>
+            <td>{{this.authorName}}</td>
+            <td>{{this.bookTitle}}</td>
+            <td>
+                <button onclick="editAuthorBook({{this.authorBookID}}, '{{this.authorID}}', '{{this.bookID}}')">
+                    Edit
+                </button>
+                <button onclick="deleteAuthorBook({{this.authorBookID}})">Delete</button>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
-<script src="./js/authorbooks.js"></script>
 
+<!-- Edit Modal -->
+<dialog id="editAuthorBookModal">
+    <form id="edit-author-book-form-ajax">
+        <legend>Edit Author-Book Relationship</legend>
+        <fieldset>
+            <input type="hidden" name="authorBookID" id="edit-authorBookID">
+
+            <label for="edit-input-AuthorName">Author:</label>
+            <select name="authorID" id="edit-input-AuthorName">
+                <option value="">Select an Author</option>
+                {{#each authors}}
+                <option value="{{this.authorID}}">{{this.authorName}}</option>
+                {{/each}}
+            </select>
+
+            <label for="edit-input-BookTitle">Book:</label>
+            <select name="bookID" id="edit-input-BookTitle">
+                <option value="">Select a Book</option>
+                {{#each books}}
+                <option value="{{this.bookID}}">{{this.bookTitle}}</option>
+                {{/each}}
+            </select>
+        </fieldset>
+
+        <div class="formButtons">
+            <button type="submit">Update</button>
+            <button type="button" id="closeEditAuthorBookModal">Cancel</button>
+        </div>
+    </form>
+</dialog>
+
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+<script src="./js/authorbooks.js"></script>
