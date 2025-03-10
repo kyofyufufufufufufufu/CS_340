@@ -39,12 +39,12 @@ CREATE TABLE Genres (
 CREATE TABLE UserBooks (
     userBookID INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userID INT NOT NULL,
-    bookID INT NOT NULL,
+    bookID INT NULL,
     userBookStatus ENUM('wishlist', 'read', 'dropped') NOT NULL,
     userBookRating TINYINT(1) NULL,
     CONSTRAINT chkUserBookRating CHECK(userBookRating IS NULL OR userBookRating >=1 AND userBookRating <= 5),
     FOREIGN KEY (userID) REFERENCES Users(userID) ON DELETE CASCADE,
-    FOREIGN KEY (bookID) REFERENCES Books(bookID) ON DELETE RESTRICT
+    FOREIGN KEY (bookID) REFERENCES Books(bookID) ON DELETE SET NULL
 );
 
 -- Create AuthorsofBooks Table (intersection)
