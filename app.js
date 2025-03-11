@@ -7,7 +7,7 @@ const app     = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-PORT = 8763;
+PORT = 8764;
 
 // Database
 const db      = require('./database/db-connector')
@@ -72,39 +72,28 @@ app.get('/users', function(req, res) {
 });           
 
 app.post('/add-user-ajax', function(req, res) {
-    // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
-    // Create the query and run it on the database
-    query1 = `INSERT INTO Users (userName, password, email) VALUES ('${data.userName}', '${data.password}', '${data.email}')`;
-    db.pool.query(query1, function(error, rows, fields) {
-
-        // Check to see if there was an error
+    // Insert new row
+    let query1 = `INSERT INTO Users (userName, password, email) VALUES (?, ?, ?)`;
+    db.pool.query(query1, [data.userName, data.password, data.email], function(error) {
         if (error) {
-
-            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
-            console.log(error)
-            res.sendStatus(400);
-        }
-        else {
-            // If there was no error, perform a SELECT * on Users
-            query2 = `SELECT * FROM Users;`;
-            db.pool.query(query2, function(error, rows, fields) {
-
-                // If there was an error on the second query, send a 400
+            console.error(error);
+            return res.sendStatus(400);
+        } else {
+            // Then select all users
+            let query2 = `SELECT * FROM Users;`;
+            db.pool.query(query2, function(error, rows) {
                 if (error) {
-                    
-                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
-                    console.log(error);
-                    res.sendStatus(400);
+                    console.error(error);
+                    return res.sendStatus(400);
+                } else {
+                    // Return the entire list with success: true
+                    res.json({ success: true, users: rows });
                 }
-                // If all went well, send the results of the query back.
-                else {
-                    res.send(rows);
-                }
-            })
+            });
         }
-    })
+    });
 });
 
 app.post('/edit-user-ajax', function(req, res) {
