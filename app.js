@@ -12,8 +12,12 @@ PORT = 8763;
 // Database
 const db      = require('./database/db-connector')
 
+const fs = require('fs');
+const path = require('path');
+
 const { engine } = require('express-handlebars');
 var exphbs = require('express-handlebars');     
+const { equal } = require('assert');
 app.engine('.hbs', engine({extname: ".hbs"}));  
 app.set('view engine', '.hbs');   
 
@@ -32,6 +36,30 @@ hbs.handlebars.registerHelper('isNotEqual', function (a, b, options) {
 // Routes
 app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
+});
+
+app.get('/search-user', function(req, res)
+{
+    let query1;
+    
+    if (req.query.userName === undefined)
+    {
+        query1 = "SELECT * FROM Users;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Users WHERE userName LIKE "${req.query.userName}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let user = rows;
+
+        return res.render('users', {data: user});
+
+    })
+
 });
 
 app.get('/users', function(req, res) {  
@@ -465,6 +493,33 @@ app.get('/authorbooks', function(req, res) {
 
                 // Render
                 res.render('authorbooks', { authorbooks, authors, books });
+    let query = `
+        SELECT AuthorsofBooks.authorBookID, 
+               Authors.authorID, Authors.authorName, 
+               Books.bookID, Books.bookTitle
+        FROM AuthorsofBooks
+        JOIN Authors ON AuthorsofBooks.authorID = Authors.authorID
+        JOIN Books ON AuthorsofBooks.bookID = Books.bookID;
+    `;
+
+    db.pool.query(query, function (error, authorbooks) {
+        if (error) {
+            console.error("Error executing query:", error);
+            return res.status(500).send("Database error");
+        }
+
+        // Fetch authors and books for dropdowns
+        let queryAuthors = "SELECT * FROM Authors;";
+        let queryBooks = "SELECT * FROM Books;";
+
+        db.pool.query(queryAuthors, function (error, authors) {
+            if (error) return res.status(500).send("Database error");
+
+            db.pool.query(queryBooks, function (error, books) {
+                if (error) return res.status(500).send("Database error");
+
+                // Render
+                res.render('authorbooks', { authorbooks, authors, books });
             });
         });
     });
@@ -473,6 +528,14 @@ app.get('/authorbooks', function(req, res) {
 app.post('/add-author-book-ajax', function(req, res) {
     let data = req.body;
 
+    // Check validation
+    if (!data.authorID || !data.bookID) {
+        console.log("Missing authorID or bookID");
+        return res.status(400).send("Missing required fields.");
+    }
+
+    let query1 = "INSERT INTO AuthorsofBooks (authorID, bookID) VALUES (?, ?)";
+    db.pool.query(query1, [data.authorID, data.bookID], function(error, results) {
     // Check validation
     if (!data.authorID || !data.bookID) {
         console.log("Missing authorID or bookID");
@@ -557,6 +620,16 @@ app.get('/bookgenres', function(req, res) {
         JOIN Genres ON GenresofBooks.genreID = Genres.genreID
         JOIN Books ON GenresofBooks.bookID = Books.bookID
     `;
+    let query1 = `
+        SELECT GenresofBooks.genreBookID, 
+               Genres.genreName, 
+               Books.bookTitle, 
+               Genres.genreID, 
+               Books.bookID
+        FROM GenresofBooks
+        JOIN Genres ON GenresofBooks.genreID = Genres.genreID
+        JOIN Books ON GenresofBooks.bookID = Books.bookID
+    `;
 
     let query2 = "SELECT * FROM Genres;";
     let query3 = "SELECT * FROM Books;";
@@ -566,9 +639,15 @@ app.get('/bookgenres', function(req, res) {
             console.error("Error executing query1:", error);
             return res.status(500).send("Database error");
         }
+        if (error) {
+            console.error("Error executing query1:", error);
+            return res.status(500).send("Database error");
+        }
 
         let bookgenres = rows;
 
+        db.pool.query(query2, function(error, rows, fields) {
+            if (error) return res.status(500).send("Database error");
         db.pool.query(query2, function(error, rows, fields) {
             if (error) return res.status(500).send("Database error");
 
@@ -576,8 +655,51 @@ app.get('/bookgenres', function(req, res) {
 
             db.pool.query(query3, function(error, rows, fields) {
                 if (error) return res.status(500).send("Database error");
+            db.pool.query(query3, function(error, rows, fields) {
+                if (error) return res.status(500).send("Database error");
 
                 let books = rows;
+
+                return res.render('bookgenres', {
+                    bookgenres: bookgenres,
+                    genres: genres,
+                    books: books
+                });
+            });
+        });
+    });
+});
+
+// CREATE Book-Genre Relationship
+app.post('/add-bookgenre-ajax', function (req, res) {
+    let { bookID, genreID } = req.body;
+    
+    let query = `INSERT INTO GenresofBooks (bookID, genreID) VALUES (?, ?)`;
+    db.pool.query(query, [bookID, genreID], function (error, results) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        db.pool.query("SELECT * FROM GenresofBooks;", function (error, rows) {
+            if (error) return res.sendStatus(400);
+            res.json({ success: true, bookgenres: rows });
+        });
+    });
+});
+
+// EDIT/UPDATE bookGenres
+app.post('/edit-bookgenre-ajax', function (req, res) {
+    let { genreBookID, bookID, genreID } = req.body;
+    
+    let query = "UPDATE GenresofBooks SET bookID = ?, genreID = ? WHERE genreBookID = ?";
+    db.pool.query(query, [bookID, genreID, genreBookID], function (error, results) {
+        if (error) {
+            console.log(error);
+            return res.json({ success: false });
+        }
+        res.json({ success: results.affectedRows > 0 });
+    });
 
                 return res.render('bookgenres', {
                     bookgenres: bookgenres,
