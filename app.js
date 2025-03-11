@@ -107,6 +107,30 @@ app.post('/add-user-ajax', function(req, res) {
     })
 });
 
+app.post('/edit-user-ajax', function(req, res) {
+    const { userID, userName, email, password } = req.body;
+    console.log('Editing User:', req.body);
+
+    let query;
+    let values;
+
+    if (password) { // If user entered a new password
+        query = "UPDATE Users SET userName = ?, password = ?, email = ? WHERE userID = ?";
+        values = [userName, password, email, userID];
+    } else { // If password is blank, do not update it
+        query = "UPDATE Users SET userName = ?, email = ? WHERE userID = ?";
+        values = [userName, email, userID];
+    }
+
+    db.pool.query(query, values, function(error, results) {
+        if (error) {
+            console.log(error);
+            return res.json({ success: false });
+        }
+        res.json({ success: results.affectedRows > 0 });
+    });
+});
+
 app.delete('/delete-user-ajax/', function(req,res,next) {
     let data = req.body;
     let userID = parseInt(data.userID);
@@ -136,6 +160,23 @@ app.get('/books', function(req, res) {
         })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
+// CREATE books
+app.post('/add-book-ajax', (req, res) => {
+    let data = req.body;
+    let query = `INSERT INTO Books (bookTitle, bookDescription, bookPublishDate) VALUES (?, ?, ?)`;
+
+    db.pool.query(query, [data.bookTitle, data.bookDescription, data.bookPublishDate], (error, rows) => {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+        db.pool.query("SELECT * FROM Books;", (error, rows) => {
+            if (error) return res.sendStatus(400);
+            res.json({ success: true, books: rows });
+        });
+    });
+});
+
 app.get('/search-book', function(req, res)
 {
     let query1;
@@ -158,6 +199,31 @@ app.get('/search-book', function(req, res)
 
     })
 
+});
+
+//UPDATE/EDIT Books
+app.post('/edit-book-ajax', (req, res) => {
+    const { bookID, bookTitle, bookDescription, bookPublishDate } = req.body;
+    
+    // For errors... since it wanted to act up
+    console.log('Received bookID:', bookID); // Log bookID
+    console.log('Received bookTitle:', bookTitle); // Log bookTitle
+    console.log('Received bookDescription:', bookDescription); // Log bookDescription
+    console.log('Received bookPublishDate:', bookPublishDate); // Log bookPublishDate
+
+    const sql = "UPDATE Books SET bookTitle = ?, bookDescription = ?, bookPublishDate = ? WHERE bookID = ?";
+    db.pool.query(sql, [bookTitle, bookDescription, bookPublishDate, bookID], (error, results) => {
+        if (error) {
+            console.error(error);
+            return res.json({ success: false });
+        }
+
+        if (results.affectedRows > 0) {
+            return res.json({ success: true });
+        } else {
+            return res.json({ success: false });
+        }
+    });
 });
 
 app.delete('/delete-book-ajax/', function(req,res,next) {
@@ -281,6 +347,24 @@ app.get('/genres', function(req, res) {
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
+// ADD Genre
+app.post('/add-genre-ajax', function(req, res) {
+    let data = req.body;
+    let query = "INSERT INTO Genres (genreName) VALUES (?)";
+
+    db.pool.query(query, [data.genreName], function(error, results) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        db.pool.query("SELECT * FROM Genres;", function(error, rows) {
+            if (error) return res.sendStatus(400);
+            res.json({ success: true, genres: rows });
+        });
+    });
+});
+
 app.get('/search-genre', function(req, res)
 {
     let query1;
@@ -305,6 +389,26 @@ app.get('/search-genre', function(req, res)
 
 });
 
+// EDIT Genre
+app.post('/edit-genre-ajax', function(req, res) {
+    const { genreID, genreName } = req.body;
+    console.log('Editing Genre:', req.body);
+
+    let query = "UPDATE Genres SET genreName = ? WHERE genreID = ?";
+    db.pool.query(query, [genreName, genreID], function(error, results) {
+        if (error) {
+            console.log(error);
+            return res.json({ success: false });
+        }
+
+        // Return updated list of genres
+        db.pool.query("SELECT * FROM Genres;", function(error, rows) {
+            if (error) return res.sendStatus(400);
+            res.json({ success: results.affectedRows > 0, genres: rows });
+        });
+    });
+});
+
 app.delete('/delete-genre-ajax/', function(req,res,next) {
     let data = req.body;
     let genreID = parseInt(data.genreID);
@@ -326,59 +430,92 @@ app.delete('/delete-genre-ajax/', function(req,res,next) {
 });
 
 app.get('/userbooks', function(req, res) {  
+    let query = `
+        SELECT UserBooks.userBookID, 
+               Users.userID, Users.userName, 
+               Books.bookID, Books.bookTitle, 
+               UserBooks.userBookStatus, 
+               UserBooks.userBookRating
+        FROM UserBooks
+        JOIN Users ON UserBooks.userID = Users.userID
+        LEFT JOIN Books ON UserBooks.bookID = Books.bookID;
+    `;
 
-    let query1 = "SELECT * FROM UserBooks;";     
 
-    let query2 = "SELECT * FROM Users;";
-    
-    let query3 = "SELECT * FROM Books;";
+    db.pool.query(query, function (error, userbooks) {
+        if (error) {
+            console.error("Error executing query:", error);
+            return res.status(500).send("Database error");
+        }
 
-    db.pool.query(query1, function (error, rows, fields) {
+        // Fetch users and books separately for dropdowns
+        let queryUsers = "SELECT * FROM Users;";
+        let queryBooks = "SELECT * FROM Books;";
 
-        let userbooks = rows;
+        db.pool.query(queryUsers, function (error, users) {
+            if (error) return res.status(500).send("Database error");
 
-        db.pool.query(query2, function (error, rows, fields) {
+            db.pool.query(queryBooks, function (error, books) {
+                if (error) return res.status(500).send("Database error");
 
-            let users = rows;
-            let usermap = {}
-
-            users.map(user => {
-                let id = parseInt(user.userID, 10);
-                usermap[id] = user["userName"]
-            })
-
-            userbooks = userbooks.map(userbook => {
-                return Object.assign(userbook, {userID: usermap[userbook.userID]})
-            })
-
-            db.pool.query(query3, function (error, rows, fields) {
-
-                if (error) {
-                    console.error("Error executing query1:", error);
-                    return res.status(500).send("Database error: Duplicate ID chosen");
-                }
-
-                let books = rows;
-                let bookmap = {}
-
-                books.map(book => {
-                    let id = parseInt(book.bookID, 10);
-                    bookmap[id] = book["bookTitle"];
-                })
-
-                userbooks = userbooks.map(userbook => {
-                    return Object.assign(userbook, {bookID: bookmap[userbook.bookID]})
-                })
-
-                return res.render('userbooks', {userbooks: userbooks, users: users, books: books});
-
+                // Render the page with userbook data and dropdown options
+                res.render('userbooks', { userbooks, users, books });
             });
-
         });
-
     });
-
 });
+
+// CREATE UserBook
+app.post('/add-userbook-ajax', function(req, res) {
+    const { userID, bookID, userBookStatus, userBookRating } = req.body;
+
+    const query = "INSERT INTO UserBooks (userID, bookID, userBookStatus, userBookRating) VALUES (?, ?, ?, ?)";
+
+    db.pool.query(query, [userID, bookID, userBookStatus, userBookRating], function(error, results) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        // Fetch updated userbooks
+        const getUserBooksQuery = "SELECT * FROM UserBooks";
+        db.pool.query(getUserBooksQuery, function(error, rows) {
+            if (error) {
+                console.log(error);
+                return res.sendStatus(400);
+            }
+
+            res.json({ success: true, userbooks: rows });
+        });
+    });
+});
+
+
+// EDIT/UPDATE UserBook
+app.post('/edit-userbook-ajax', function(req, res) {
+    const { userBookID, userID, bookID, userBookStatus, userBookRating } = req.body;
+
+    const query = "UPDATE UserBooks SET userID = ?, bookID = ?, userBookStatus = ?, userBookRating = ? WHERE userBookID = ?";
+
+    db.pool.query(query, [userID, bookID, userBookStatus, userBookRating, userBookID], function(error, results) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        // Fetch updated userbooks
+        const getUserBooksQuery = "SELECT * FROM UserBooks";
+        db.pool.query(getUserBooksQuery, function(error, rows) {
+            if (error) {
+                console.log(error);
+                return res.sendStatus(400);
+            }
+
+            res.json({ success: true, userbooks: rows });
+        });
+    });
+});
+
 
 app.delete('/delete-userbook-ajax/', function(req,res,next) {
     let data = req.body;
@@ -401,96 +538,95 @@ app.delete('/delete-userbook-ajax/', function(req,res,next) {
 });
 
 app.get('/authorbooks', function(req, res) {  
+    let query = `
+        SELECT AuthorsofBooks.authorBookID, 
+               Authors.authorID, Authors.authorName, 
+               Books.bookID, Books.bookTitle
+        FROM AuthorsofBooks
+        JOIN Authors ON AuthorsofBooks.authorID = Authors.authorID
+        JOIN Books ON AuthorsofBooks.bookID = Books.bookID;
+    `;
 
-    let query1 = "SELECT * FROM AuthorsofBooks;";     
+    db.pool.query(query, function (error, authorbooks) {
+        if (error) {
+            console.error("Error executing query:", error);
+            return res.status(500).send("Database error");
+        }
 
-    let query2 = "SELECT * FROM Authors;";
-    
-    let query3 = "SELECT * FROM Books;";
+        // Fetch authors and books for dropdowns
+        let queryAuthors = "SELECT * FROM Authors;";
+        let queryBooks = "SELECT * FROM Books;";
 
-    db.pool.query(query1, function (error, rows, fields) {
+        db.pool.query(queryAuthors, function (error, authors) {
+            if (error) return res.status(500).send("Database error");
 
-        let authorbooks = rows;
+            db.pool.query(queryBooks, function (error, books) {
+                if (error) return res.status(500).send("Database error");
 
-        db.pool.query(query2, function (error, rows, fields) {
-
-            let authors = rows;
-            let authormap = {}
-
-            authors.map(author => {
-                let id = parseInt(author.authorID, 10);
-                authormap[id] = author["authorName"]
-            })
-
-            authorbooks = authorbooks.map(authorbook => {
-                return Object.assign(authorbook, {authorID: authormap[authorbook.authorID]})
-            })
-
-            db.pool.query(query3, function (error, rows, fields) {
-
-                if (error) {
-                    console.error("Error executing query1:", error);
-                    return res.status(500).send("Database error: Duplicate ID chosen");
-                }
-
-                let books = rows;
-                let bookmap = {}
-
-                books.map(book => {
-                    let id = parseInt(book.bookID, 10);
-                    bookmap[id] = book["bookTitle"];
-                })
-
-                authorbooks = authorbooks.map(authorbook => {
-                    return Object.assign(authorbook, {bookID: bookmap[authorbook.bookID]})
-                })
-
-                return res.render('authorbooks', {authorbooks: authorbooks, authors: authors, books: books});
-
+                // Render
+                res.render('authorbooks', { authorbooks, authors, books });
             });
-
         });
-
     });
-
 });
 
 app.post('/add-author-book-ajax', function(req, res) {
-    // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
-    // Create the query and run it on the database
-    query1 = `INSERT INTO AuthorsofBooks (authorID, bookID) VALUES ('${data.authorID}', '${data.bookID}')`;
-    db.pool.query(query1, function(error, rows, fields){
+    // Check validation
+    if (!data.authorID || !data.bookID) {
+        console.log("Missing authorID or bookID");
+        return res.status(400).send("Missing required fields.");
+    }
 
-        // Check to see if there was an error
+    let query1 = "INSERT INTO AuthorsofBooks (authorID, bookID) VALUES (?, ?)";
+    db.pool.query(query1, [data.authorID, data.bookID], function(error, results) {
         if (error) {
-
-            // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
-            console.log(error)
-            res.sendStatus(400);
+            console.log("SQL Error:", error);
+            return res.status(400).send("Database Error");
         }
-        else
-        {
-            // If there was no error, perform a SELECT * on bsg_people
-            query2 = `SELECT * FROM AuthorsofBooks;`;
-            db.pool.query(query2, function(error, rows, fields){
 
-                // If there was an error on the second query, send a 400
-                if (error) {
-                    
-                    // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
-                    console.log(error);
-                    res.sendStatus(400);
-                }
-                // If all went well, send the results of the query back.
-                else
-                {
-                    res.send(rows);
-                }
-            })
+        let query2 = `
+            SELECT AuthorsofBooks.authorBookID, 
+                   Authors.authorID, Authors.authorName, 
+                   Books.bookID, Books.bookTitle
+            FROM AuthorsofBooks
+            JOIN Authors ON AuthorsofBooks.authorID = Authors.authorID
+            JOIN Books ON AuthorsofBooks.bookID = Books.bookID;
+        `;
+
+        db.pool.query(query2, function(error, rows) {
+            if (error) {
+                console.log("SQL Error:", error);
+                return res.status(400).send("Database Error");
+            }
+
+            res.json({ success: true, authorbooks: rows });
+        });
+    });
+});
+
+
+// EDIT/UPDATE authorBooks
+app.post('/edit-author-book-ajax', function(req, res) {
+    let data = req.body;
+
+    if (!data.authorBookID || !data.authorID || !data.bookID) {
+        console.log("Error: Missing required fields.");
+        return res.status(400).json({ success: false, error: "Missing required fields" });
+    }
+
+    let query = `UPDATE AuthorsofBooks SET authorID = ?, bookID = ? WHERE authorBookID = ?`;
+
+    db.pool.query(query, [data.authorID, data.bookID, data.authorBookID], function(error, results) {
+        if (error) {
+            console.log("SQL Update Error:", error);
+            return res.status(500).json({ success: false, error: "Database update failed." });
         }
-    })
+
+        console.log(`Updated authorBookID ${data.authorBookID} → Author: ${data.authorID}, Book: ${data.bookID}`);
+        res.json({ success: true });
+    });
 });
 
 
@@ -516,60 +652,79 @@ app.delete('/delete-author-book-ajax', function(req,res,next) {
 });
 
 app.get('/bookgenres', function(req, res) {  
-
-    let query1 = "SELECT * FROM GenresofBooks;";
+    let query1 = `
+        SELECT GenresofBooks.genreBookID, 
+               Genres.genreName, 
+               Books.bookTitle, 
+               Genres.genreID, 
+               Books.bookID
+        FROM GenresofBooks
+        JOIN Genres ON GenresofBooks.genreID = Genres.genreID
+        JOIN Books ON GenresofBooks.bookID = Books.bookID
+    `;
 
     let query2 = "SELECT * FROM Genres;";
-
     let query3 = "SELECT * FROM Books;";
 
     db.pool.query(query1, function(error, rows, fields) {  
+        if (error) {
+            console.error("Error executing query1:", error);
+            return res.status(500).send("Database error");
+        }
 
         let bookgenres = rows;
 
-        db.pool.query(query2, function (error, rows, fields) {
+        db.pool.query(query2, function(error, rows, fields) {
+            if (error) return res.status(500).send("Database error");
 
             let genres = rows;
-            let genremap = {}
 
-            genres.map(genre => {
-                let id = parseInt(genre.genreID, 10);
-                genremap[id] = genre["genreName"]
-            })
-
-            bookgenres = bookgenres.map(bookgenre => {
-                return Object.assign(bookgenre, {genreID: genremap[bookgenre.genreID]})
-            })
-
-            db.pool.query(query3, function (error, rows, fields) {
-
-                if (error) {
-                    console.error("Error executing query1:", error);
-                    return res.status(500).send("Database error: Duplicate ID chosen");
-                }
+            db.pool.query(query3, function(error, rows, fields) {
+                if (error) return res.status(500).send("Database error");
 
                 let books = rows;
-                let bookmap = {}
 
-                books.map(book => {
-                    let id = parseInt(book.bookID, 10);
-                    bookmap[id] = book["bookTitle"];
-                })
-
-                bookgenres = bookgenres.map(bookgenre => {
-                    return Object.assign(bookgenre, {bookID: bookmap[bookgenre.bookID]})
-                })
-
-                return res.render('bookgenres', {bookgenres: bookgenres, genres: genres, books: books});
-
+                return res.render('bookgenres', {
+                    bookgenres: bookgenres,
+                    genres: genres,
+                    books: books
+                });
             });
-
         });
-
     });
-
 });
 
+// CREATE Book-Genre Relationship
+app.post('/add-bookgenre-ajax', function (req, res) {
+    let { bookID, genreID } = req.body;
+    
+    let query = `INSERT INTO GenresofBooks (bookID, genreID) VALUES (?, ?)`;
+    db.pool.query(query, [bookID, genreID], function (error, results) {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+
+        db.pool.query("SELECT * FROM GenresofBooks;", function (error, rows) {
+            if (error) return res.sendStatus(400);
+            res.json({ success: true, bookgenres: rows });
+        });
+    });
+});
+
+// EDIT/UPDATE bookGenres
+app.post('/edit-bookgenre-ajax', function (req, res) {
+    let { genreBookID, bookID, genreID } = req.body;
+    
+    let query = "UPDATE GenresofBooks SET bookID = ?, genreID = ? WHERE genreBookID = ?";
+    db.pool.query(query, [bookID, genreID, genreBookID], function (error, results) {
+        if (error) {
+            console.log(error);
+            return res.json({ success: false });
+        }
+        res.json({ success: results.affectedRows > 0 });
+    });
+});
 
 app.delete('/delete-bookgenre-ajax/', function(req,res,next) {
     let data = req.body;

@@ -104,6 +104,92 @@ addRowToTable = (data) => {
     currentTable.appendChild(row);
 }
 
+// EDIT authorBook function
+function editAuthorBook(authorBookID, authorID, bookID) {
+    console.log("Editing authorBookID:", authorBookID, "authorID:", authorID, "bookID:", bookID); // Debugging
+
+    // Pre-fill form with current data
+    document.getElementById('edit-authorBookID').value = authorBookID;
+    document.getElementById('edit-input-AuthorName').value = authorID; // Prefill Author dropdown
+    document.getElementById('edit-input-BookTitle').value = bookID; // Prefill Book dropdown
+
+    // Show the modal
+    const modal = document.getElementById("editAuthorBookModal");
+    if (modal) {
+        modal.showModal();
+    } else {
+        console.error("Modal element not found.");
+    }
+}
+
+// UPDATE
+document.getElementById('edit-author-book-form-ajax').addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let authorBookID = document.getElementById("edit-authorBookID").value;
+    let authorID = document.getElementById("edit-input-AuthorName").value;
+    let bookID = document.getElementById("edit-input-BookTitle").value;
+
+    if (!authorBookID || !authorID || !bookID) {
+        alert("All fields must be selected before updating.");
+        return;
+    }
+
+    let data = { 
+        authorBookID: authorBookID, 
+        authorID: authorID, 
+        bookID: bookID 
+    };
+
+    // Log before sending request
+    console.log("Sending update request:", JSON.stringify(data));
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/edit-author-book-ajax", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+
+    xhttp.onreadystatechange = () => {
+        if (xhttp.readyState == 4) {
+            if (xhttp.status == 200) {
+                let response = JSON.parse(xhttp.response);
+                if (response.success) {
+                    console.log("Update successful:", response);
+                    updateRow(authorBookID, authorID, bookID);
+                    document.getElementById("editAuthorBookModal").close();
+                } else {
+                    console.error("Error updating author-book relationship:", response);
+                }
+            } else {
+                console.error("Failed to update. Server response:", xhttp.responseText);
+            }
+        }
+    };
+
+    xhttp.send(JSON.stringify(data));
+});
+
+// Function to close the edit modal
+document.getElementById("closeEditAuthorBookModal").addEventListener("click", function () {
+    document.getElementById("editAuthorBookModal").close();
+});
+
+// Function to update a row dynamically after edit
+function updateRow(authorBookID, authorID, bookID) {
+    let row = document.querySelector(`tr[data-value="${authorBookID}"]`);
+    if (!row) {
+        console.error("Row not found for update:", authorBookID);
+        return;
+    }
+
+    let updatedAuthorName = document.querySelector(`#edit-input-AuthorName option[value="${authorID}"]`)?.textContent || "Unknown Author";
+    let updatedBookTitle = document.querySelector(`#edit-input-BookTitle option[value="${bookID}"]`)?.textContent || "Unknown Book";
+
+    console.log(`Updating row ${authorBookID} → Author: ${updatedAuthorName}, Book: ${updatedBookTitle}`);
+
+    row.cells[1].innerText = updatedAuthorName;
+    row.cells[2].innerText = updatedBookTitle;
+}
+
 
 function deleteAuthorBook(authorBookID) {
     let link = '/delete-author-book-ajax/';

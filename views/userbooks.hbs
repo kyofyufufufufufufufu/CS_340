@@ -1,24 +1,24 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
 <h1>User Book Data</h1>
 
-<form action="/add-userbook" method="POST">
+<!-- Form to Create User Book -->
+<form id="add-userbook-form">
     <label for="user">User:</label>
-    <select id="user" name="userID">
+    <select id="user" name="userID" required>
         {{#each users}}
             <option value="{{userID}}">{{userName}}</option>
         {{/each}}
     </select>
 
     <label for="book">Book:</label>
-    <select id="book" name="bookID">
+    <select id="book" name="bookID" required>
         {{#each books}}
             <option value="{{bookID}}">{{bookTitle}}</option>
         {{/each}}
     </select>
 
     <label for="status">Status:</label>
-    <select id="status" name="userBookStatus">
+    <select id="status" name="userBookStatus" required>
         <option value="wishlist">Wishlist</option>
         <option value="read">Read</option>
         <option value="dropped">Dropped</option>
@@ -27,21 +27,12 @@
     <label for="rating">Rating:</label>
     <select id="rating" name="userBookRating">
         <option value="">No Rating</option>
-        {{#each [1,2,3,4,5]}}
-            <option value="{{this}}">{{this}} Stars</option>
-        {{/each}}
     </select>
 
-    <button type="submit">Add User Book</button>
+    <button type="submit">Assign User Book</button>
 </form>
 
-<div class="form-spacing"></div>
-
-<!-- Search Form -->
-<form action="/search-book" method="POST">
-    <input type="text" id="bookTitle" name="bookTitle" required>
-    <button type="submit">Search</button>
-</form>
+<hr/>
 
 <h2>User Book List</h2>
 <table id="userbooks_table">
@@ -52,23 +43,64 @@
       <th>Book</th>
       <th>Status</th>
       <th>Rating</th>
-      <th>Delete</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
       {{#each userbooks}}
-      <tr data-value={{this.userBookID}}>
+      <tr data-value="{{this.userBookID}}">
         <td>{{this.userBookID}}</td>
-        <td>{{this.userID}}</td>
-        <td>{{this.bookID}}</td>
+        <td>{{this.userName}}</td>
+        <td>{{#if this.bookTitle}}{{this.bookTitle}}{{else}}N/A{{/if}}</td>
         <td>{{this.userBookStatus}}</td>
         <td>{{#if this.userBookRating}}{{this.userBookRating}} Stars{{else}}N/A{{/if}}</td>
-        <td><button
-                  onclick="deleteUserBook({{this.userBookID}})"
-                  >Delete</button></td>
+        <td>
+            <button onclick="editUserBook({{this.userBookID}}, '{{this.userID}}', '{{this.bookID}}', '{{this.userBookStatus}}', '{{this.userBookRating}}')">Edit</button>
+            <button onclick="deleteUserBook({{this.userBookID}})">Delete</button>
+        </td>
       </tr>
       {{/each}}
   </tbody>
 </table>
+
+<!-- Edit Modal -->
+<dialog id="editUserBookForm">
+    <form id="edit-userbook-form">
+        <legend>Edit User Book</legend>
+        <fieldset>
+            <input type="hidden" id="editUserBookID" name="userBookID">
+            
+            <label for="editUser">User:</label>
+            <select id="editUser" name="userID">
+                {{#each users}}
+                    <option value="{{userID}}">{{userName}}</option>
+                {{/each}}
+            </select>
+
+            <label for="editBook">Book:</label>
+            <select id="editBook" name="bookID">
+                {{#each books}}
+                    <option value="{{bookID}}">{{bookTitle}}</option>
+                {{/each}}
+            </select>
+
+            <label for="editStatus">Status:</label>
+            <select id="editStatus" name="userBookStatus">
+                <option value="wishlist">Wishlist</option>
+                <option value="read">Read</option>
+                <option value="dropped">Dropped</option>
+            </select>
+
+            <label for="editRating">Rating:</label>
+            <select id="editRating" name="userBookRating">
+                <option value="">No Rating</option>
+            </select>
+        </fieldset>
+        <div class="formButtons">
+            <button type="submit">Update</button>
+            <button type="button" id="closeEditForm">Cancel</button>
+        </div>
+    </form>
+</dialog>
 
 <script src="./js/userbooks.js"></script>

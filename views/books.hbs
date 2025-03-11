@@ -40,57 +40,61 @@
             <td>{{this.bookTitle}}</td>
             <td>{{this.bookDescription}}</td>
             <td>{{this.bookPublishDate}}</td>
-            <td><button
-                    onclick="deleteBook({{this.bookID}})"
-                    >Delete</button>
+            <td>
+                <button onclick="editBook({{this.bookID}})">Edit</button>
+                <button onclick="deleteBook({{this.bookID}})">Delete</button>
             </td>
         </tr>
         {{/each}}
   </tbody>
 </table>
 
+<!-- Modals -->
+
 <!-- Modal for creating a new book -->
 <dialog id="createBookForm">
-    <form action="/add-book" method="POST">
+    <form id="add-book-form-ajax">
         <legend>Create New Book</legend>
         <fieldset>
-            <label for="newBookTitle">Title:</label>
-            <input type="text" id="newBookTitle" name="bookTitle" required>
+            <label for="input-bookTitle">Book Title:</label>
+            <input type="text" id="input-bookTitle" name="input-bookTitle" required>
 
-            <label for="newDesc">Description:</label>
-            <input type="text" id="bookDescription" name="bookDescription" required>
+            <label for="input-bookDescription">Book Description:</label>
+            <input type="text" id="input-bookDescription" name="input-bookDescription" required>
 
-            <label for="newPublishDate">Publish Date:</label>
-            <input type="date" id="bookPublishDate" name="bookPublishDate" required>
+            <label for="input-bookPublishDate">Book Publish Date:</label>
+            <input type="date" id="input-bookPublishDate" name="input-bookPublishDate" required>
         </fieldset>
         <div class="formButtons">
+            <button type="submit">Submit Query</button>
             <button type="button" id="closeForm">Cancel</button>
-            <button type="submit">Submit</button>
         </div>
     </form>
 </dialog>
 
 <!-- Edit Book Modal -->
 <dialog id="editBookForm">
-    <form action="/edit-book" method="POST">
+    <form action="/edit-book-ajax" method="POST">
         <legend>Edit Existing Book</legend>
         <fieldset>
             <input type="hidden" id="editBookId" name="bookId">
             
-            <label for="editBookTitle">New Title:</label>
-            <input type="text" id="editTitle" name="bookTitle" readonly>
-
-            <label for="editDesc">New Description:</label>
-            <input type="text" id="editDesc" name="bookDescription">
-
-            <label for="editPublishDate">New Publish Date:</label>
-            <input type="date" id="editPublishDate" name="bookPublishDate">
+            <label for="editBookTitle">Book Title:</label>
+            <input type="text" id="editBookTitle" name="bookTitle" required>
+        </fieldset>
+        <fieldset>
+            <label for="editBookDescription">Book Description:</label>
+            <input type="text" id="editBookDescription" name="bookDescription" required>
+        </fieldset>
+        <fieldset>
+            <label for="editBookPublishDate">Book Publish Date:</label>
+            <input type="date" id="editBookPublishDate" name="bookPublishDate" required value="{{this.bookPublishDate}}">
         </fieldset>
         <div class="formButtons">
-            <button type="button" id="closeForm">Cancel</button>
             <button type="submit">Update</button>
+            <button type="button" id="closeForm">Cancel</button>
         </div>
     </form>
-</dialog>
+</dialog> 
 
 <script src="./js/books.js"></script>
