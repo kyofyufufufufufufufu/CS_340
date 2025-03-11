@@ -2,7 +2,7 @@
 	--accent: #4C6B6C;
 	--lGray: #fafafa;
 	--mGray: #ebebeb;
-	--dGray: #878787;
+	--dGray: #00000;
 	--sPad: 15px;
 	--mPad: 30px;
 	--bPad: 90px;
@@ -110,49 +110,74 @@ hr {
 	border-color: var(--mGray);
 }
 
-
-
 #util dialog {
-	width: 50%;
-	border: none;
-	border-radius: 10px;
-	
-	& form {
-		& legend {
-			font-size: large;
-			font-weight: bold;
-			color: var(--accent);
-		}
-		
-		& fieldset {
-			border: 2px solid var(--mGray);
-			border-radius: 5px;
-			
-			& input, select {
-				width: 100%;
-				padding: 5px;
-				border-radius: 3px;
-				margin-bottom: var(--sPad);
-				border: 1px solid var(--mGray);
-				background-color: var(--lGray);
-				box-sizing: border-box;
-				appearance: none;
-			}
-			
-			& input:last-child, select:last-child {
-				margin-bottom: 0px;
-			}
-		}
-		
-		.formButtons {
-			display: flex;
-			
-			& button {
-				flex: 1;
-				margin: 3px;
-			}
-		}
-	}
+    width: 50%; /* You can adjust the width as needed */
+    border: none;
+    border-radius: 10px;
+    padding: 20px; /* Added padding for content inside the modal */
+    background-color: #fff; /* Ensures the modal has a background */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow around the modal */
+    display: none; /* Initially hidden, will be shown with .showModal() */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center the modal */
+    z-index: 1000; /* Ensure it appears on top of other content */
+}
+
+#util dialog[open] {
+    display: block; /* Shows the modal when it's open */
+}
+
+#util dialog form {
+    width: 100%;
+}
+
+#util dialog form legend {
+    font-size: large;
+    font-weight: bold;
+    color: var(--accent);
+}
+
+#util dialog form fieldset {
+    border: 2px solid var(--mGray);
+    border-radius: 5px;
+}
+
+#util dialog form input, 
+#util dialog form select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 3px;
+    margin-bottom: var(--sPad);
+    border: 1px solid var(--mGray);
+    background-color: var(--lGray);
+    box-sizing: border-box;
+    appearance: none;
+}
+
+#util dialog form input:last-child, 
+#util dialog form select:last-child {
+    margin-bottom: 0px;
+}
+
+#util dialog .formButtons {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#util dialog .formButtons button {
+    flex: 1;
+    margin: 5px;
+}
+
+/* Form container */
+#userbook-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sPad);  /* Space between form elements */
+    align-items: center;  /* Align form elements vertically */
+    justify-content: flex-start;  /* Align form elements to the left */
 }
 
 main {

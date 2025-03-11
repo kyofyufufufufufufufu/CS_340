@@ -2,7 +2,7 @@
 
 <h1>User Data</h1>
 
-<!-- Button to open the modal -->
+<!-- Button to open the modal for creating a new user -->
 <section class="user_buttons">
     <button id="createUserBtn">Create New User</button>
 </section>
@@ -17,7 +17,6 @@
 
 <div class="form-spacing"></div>
 
-<!-- Table for displaying users -->
 <h2>Users List</h2>
 <table id="users_table">
   <thead>
@@ -30,20 +29,26 @@
     </tr>
   </thead>
   <tbody>
-        {{#each data}}
-        <tr data-value="{{this.userID}}">
-            <td>{{this.userID}}</td>
-            <td>{{this.userName}}</td>
-            <td>{{this.password}}</td>
-            <td>{{this.email}}</td>
-            <td><button 
-                    onclick="editUser({{this.userID}})"
-                    >Edit</button>
-                <button
-                    onclick="deleteUser({{this.userID}})"
-                    >Delete</button></td>
-        </tr>
-        {{/each}}
+    {{#each data}}
+    <tr data-value="{{this.userID}}">
+        <td>{{this.userID}}</td>
+        <td>{{this.userName}}</td>
+        <td>{{this.password}}</td>
+        <td>{{this.email}}</td>
+        <td>
+          <button 
+            onclick="editUser({{this.userID}}, '{{this.userName}}', '{{this.password}}', '{{this.email}}')"
+          >
+            Edit
+          </button>
+          <button
+            onclick="deleteUser({{this.userID}})"
+          >
+            Delete
+          </button>
+        </td>
+    </tr>
+    {{/each}}
   </tbody>
 </table>
 
@@ -64,7 +69,7 @@
             <input type="email" id="input-email" name="input-email" required>
         </fieldset>
         <div class="formButtons">
-            <input type="submit">
+            <input type="submit" value="Create">
             <button type="button" id="closeForm">Cancel</button>
         </div>
     </form>
@@ -72,9 +77,10 @@
 
 <!-- Edit User Modal -->
 <dialog id="editUserForm">
-    <form action="/edit-user" method="POST">
+    <form>
         <legend>Edit Existing User</legend>
         <fieldset>
+            <!-- Hidden field for userID -->
             <input type="hidden" id="editUserId" name="userId">
             
             <label for="editUserName">Username:</label>

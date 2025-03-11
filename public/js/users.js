@@ -9,10 +9,10 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get all close buttons
     const closeButtons = document.querySelectorAll("#closeForm");
 
-    // Open modals when buttons are clicked
+    // Open modal when "Create New User" is clicked
     createUserBtn?.addEventListener("click", () => createUserForm.showModal());
 
-    // Close modals when close button is clicked
+    // Close modals when "Cancel" is clicked
     closeButtons.forEach(button => {
         button.addEventListener("click", function () {
             this.closest("dialog").close();
@@ -20,171 +20,180 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-/// Get the objects we need to modify
+// --- CREATE NEW USER ---
+
+// Get the form for adding a user
 let addUserForm = document.getElementById('add-user-form-ajax');
 
-// Modify the objects we need
 addUserForm.addEventListener("submit", function (e) {
-    
-    // Prevent the form from submitting
     e.preventDefault();
 
-    // Get form fields we need to get data from
-    let inputUserName = document.getElementById("input-userName");
-    let inputPassword = document.getElementById("input-password");
-    let inputEmail = document.getElementById("input-email");
-    
+    let inputUserName = document.getElementById("input-userName").value.trim();
+    let inputPassword = document.getElementById("input-password").value.trim();
+    let inputEmail = document.getElementById("input-email").value.trim();
 
-    // Get the values from the form fields
-    let userNameValue = inputUserName.value;
-    let passwordValue = inputPassword.value;
-    let emailValue = inputEmail.value;
-    
-
-    if (!userNameValue) {
-        alert("Username cannot be blank.");
-        return; 
-    }
-    if (!passwordValue) {
-        alert("Password cannot be blank.");
-        return;
-    }
-    if (!emailValue) {
-        alert("Email cannot be blank.");
+    if (!inputUserName || !inputPassword || !inputEmail) {
+        alert("All fields must be filled out.");
         return;
     }
 
-    // Put our data we want to send in a javascript object
-    let data = {
-        userName: userNameValue,
-        password: passwordValue,
-        email: emailValue,
-    }
-    
-    // Setup our AJAX request
+    let data = { 
+        userName: inputUserName, 
+        password: inputPassword, 
+        email: inputEmail 
+    };
+
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "/add-user-ajax", true);
     xhttp.setRequestHeader("Content-type", "application/json");
 
-    // Tell our AJAX request how to resolve
     xhttp.onreadystatechange = () => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-
-            // Add the new data to the table
-            addRowToTable(xhttp.response);
-
-            // Clear the input fields for another transaction
-            inputUserName.value = '';
-            inputPassword.value = '';
-            inputEmail.value = '';
-            
-        }
-        else if (xhttp.readyState == 4 && xhttp.status != 200) {
-            console.log("There was an error with the input.")
-        }
-    }
-
-    // Send the request and wait for the response
-    xhttp.send(JSON.stringify(data));
-
-})
-
-function deleteUser(userID) {
-    // Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
-        if (window.confirm("Are you sure you want to delete this Author from the database?")) {
-            let link = '/delete-user-ajax/';
-            let data = {
-                userID: userID
-            };
-        
-            $.ajax({
-            url: link,
-            type: 'DELETE',
-            data: JSON.stringify(data),
-            contentType: "application/json; charset=utf-8",
-            success: function(result) {
-                deleteRow(userID);
+            let response = JSON.parse(xhttp.response);
+            // Check for 'success: true' in server response
+            if (response.success) {
+                // Add the newly inserted user to the table
+                addRowToTable(response.users[response.users.length - 1]);
+                document.getElementById("createUserForm").close();
+            } else {
+                console.error("Failed to add user.");
             }
-            });
         }
-    }
-          
-function deleteRow(userID){
-    let table = document.getElementById("users_table");
-    for (let i = 0, row; row = table.rows[i]; i++) {
-        if (table.rows[i].getAttribute("data-value") == userID) {
-            table.deleteRow(i);
-            break;
-        }
-    }
-}
+    };
+    xhttp.send(JSON.stringify(data));
+});
 
-// Creates a single row from an Object representing a single record from 
-// Users
-addRowToTable = (data) => {
+function addRowToTable(newUser) {
+    let tableBody = document.querySelector("#users_table tbody");
 
-    // Get a reference to the current table on the page and clear it out.
-    let currentTable = document.getElementById("user_table");
+    let row = document.createElement("tr");
+    row.setAttribute('data-value', newUser.userID);
 
-    // Get the location where we should insert the new row (end of table)
-    let newRowIndex = currentTable.rows.length;
+    // Create cells in the same order as columns
+    let userIDCell = document.createElement("td");
+    let userNameCell = document.createElement("td");
+    let passwordCell = document.createElement("td");
+    let emailCell = document.createElement("td");
+    let actionsCell = document.createElement("td");
 
-    // Get a reference to the new row from the database query (last object)
-    let parsedData = JSON.parse(data);
-    let newRow = parsedData[parsedData.length - 1]
+    // Fill in cell values
+    userIDCell.innerText = newUser.userID;
+    userNameCell.innerText = newUser.userName;
+    passwordCell.innerText = newUser.password;
+    emailCell.innerText = newUser.email;
 
-    // Create a row and 4 cells
-    let row = document.createElement("TR");
-    let userIDCell = document.createElement("TD");
-    let userNameCell = document.createElement("TD");
-    let passwordCell = document.createElement("TD");
-    let emailCell = document.createElement("TD");
-    let actionsCell = document.createElement("TD");
-
-
-    // Fill the cells with correct data
-    userIDCell.innerText = newRow.userID;
-    userNameCell.innerText = newRow.userName;
-    passwordCell.innerText = newRow.password;
-    emailCell.innerText = newRow.email;
-
-    // Add edit & delete buttons
+    // Set up edit and delete buttons
     let editButton = document.createElement("button");
     editButton.textContent = "Edit";
     editButton.onclick = function () {
-        editUser(data.userID);
+        editUser(newUser.userID, newUser.userName, newUser.password, newUser.email);
     };
 
     let deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
     deleteButton.onclick = function () {
-        deleteUser(data.userID);
+        deleteUser(newUser.userID);
     };
 
-    // Append buttons to actions cell
     actionsCell.appendChild(editButton);
     actionsCell.appendChild(deleteButton);
 
-
-    // Add the cells to the row 
+    // Append all cells to new row
     row.appendChild(userIDCell);
     row.appendChild(userNameCell);
     row.appendChild(passwordCell);
     row.appendChild(emailCell);
     row.appendChild(actionsCell);
- 
-    // Add the row to the table
-    currentTable.appendChild('data-value', newRow.userID);
 
-    // Start of new Step 8 code for adding new data to the dropdown menu for updating people
-    
-    // Find drop down menu, create a new option, fill data in the option (userName, userID),
-    // then append option to drop down menu so newly created rows via ajax will be found in it without needing a refresh
-    let selectMenu = document.getElementById("mySelect");
-    let option = document.createElement("option");
-    option.text = newRow.userName;
-    option.value = newRow.userID;
-    selectMenu.add(option);
-    // End of new step 8 code.
+    tableBody.appendChild(row);
+}
 
+// EDIT user
+function editUser(userID, userName, password, email) {
+    document.getElementById("editUserId").value = userID;
+    document.getElementById("editUserName").value = userName;
+    // If password is null/undefined, default to empty string
+    document.getElementById("editPassword").value = password || "";
+    document.getElementById("editEmail").value = email;
+
+    document.getElementById("editUserForm").showModal();
+}
+
+// Form submission for editing a user
+let editUserForm = document.querySelector("#editUserForm form");
+editUserForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    let userID = document.getElementById("editUserId").value;
+    let userName = document.getElementById("editUserName").value;
+    let password = document.getElementById("editPassword").value;
+    let email = document.getElementById("editEmail").value;
+
+    let data = { 
+        userID: userID, 
+        userName: userName, 
+        email: email 
+    };
+    // Only include password if user actually entered one
+    if (password) {
+        data.password = password;
+    }
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST", "/edit-user-ajax", true);
+    xhttp.setRequestHeader("Content-type", "application/json");
+
+    xhttp.onreadystatechange = () => {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+            let response = JSON.parse(xhttp.response);
+            if (response.success) {
+                // Update table row with the new data
+                updateUserInTable(userID, userName, email);
+                document.getElementById("editUserForm").close();
+            } else {
+                console.error("Failed to update user.");
+            }
+        }
+    };
+    xhttp.send(JSON.stringify(data));
+});
+
+// Update after edit
+function updateUserInTable(userID, userName, email) {
+    let row = document.querySelector(`tr[data-value="${userID}"]`);
+    if (!row) return;
+
+    row.cells[1].innerText = userName;
+    // Keep password masked or unchanged in the table (row.cells[2])
+    row.cells[3].innerText = email;
+}
+
+// DELETE user
+function deleteUser(userID) {
+    if (window.confirm("Are you sure you want to delete this user?")) {
+        let link = '/delete-user-ajax/';
+        let data = { userID: userID };
+
+        $.ajax({
+            url: link,
+            type: 'DELETE',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            success: function () {
+                deleteRow(userID);
+            }
+        });
+    }
+}
+
+// Remove row after delete
+function deleteRow(userID) {
+    let table = document.getElementById("users_table");
+    for (let i = 0; i < table.rows.length; i++) {
+        let row = table.rows[i];
+        if (row.getAttribute("data-value") == userID) {
+            table.deleteRow(i);
+            break;
+        }
+    }
 }

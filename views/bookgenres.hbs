@@ -1,12 +1,17 @@
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <h1>Book Genre Data</h1>
 
-<form action="/add-genrebook" method="POST">
+<!-- Form to Assign Genre to a Book -->
+<form id="add-genrebook-form">
     <label for="book">Book:</label>
-    <input type="text" id="bookTitle" name="bookTitle" required>
+    <select id="book" name="bookID" required>
+        {{#each books}}
+            <option value="{{bookID}}">{{bookTitle}}</option>
+        {{/each}}
+    </select>
 
     <label for="genre">Genre:</label>
-    <select id="genre" name="genreID">
+    <select id="genre" name="genreID" required>
         {{#each genres}}
             <option value="{{genreID}}">{{genreName}}</option>
         {{/each}}
@@ -15,8 +20,6 @@
     <button type="submit">Assign Genre</button>
 </form>
 
-<hr/ >
-
 <h2>Book Genres List</h2>
 <table id="bookgenres_table">
   <thead>
@@ -24,21 +27,50 @@
       <th>ID</th>
       <th>Genre</th>
       <th>Book</th>
-      <th>Delete</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
       {{#each bookgenres}}
-      <tr data-value={{this.genreBookID}}>
+      <tr data-value="{{this.genreBookID}}">
         <td>{{this.genreBookID}}</td>
-        <td>{{this.genreID}}</td>
-        <td>{{this.bookID}}</td>
-        <td><button
-                  onclick="deleteBookGenre({{this.genreBookID}})"
-                  >Delete</button></td>
+        <td>{{this.genreName}}</td>
+        <td>{{this.bookTitle}}</td>
+        <td>
+            <button onclick="editBookGenre({{this.genreBookID}}, '{{this.genreID}}', '{{this.bookID}}')">Edit</button>
+            <button onclick="deleteBookGenre({{this.genreBookID}})">Delete</button>
+        </td>
       </tr>
       {{/each}}
   </tbody>
 </table>
+
+<!-- Edit Modal -->
+<dialog id="editBookGenreForm">
+    <form id="edit-genrebook-form">
+        <legend>Edit Assigned Genre</legend>
+        <fieldset>
+            <input type="hidden" id="editGenreBookID" name="genreBookID">
+            
+            <label for="editBook">Book:</label>
+            <select id="editBook" name="bookID">
+                {{#each books}}
+                    <option value="{{bookID}}">{{bookTitle}}</option>
+                {{/each}}
+            </select>
+
+            <label for="editGenre">Genre:</label>
+            <select id="editGenre" name="genreID">
+                {{#each genres}}
+                    <option value="{{genreID}}">{{genreName}}</option>
+                {{/each}}
+            </select>
+        </fieldset>
+        <div class="formButtons">
+            <button type="submit">Update</button>
+            <button type="button" id="closeEditForm">Cancel</button>
+        </div>
+    </form>
+</dialog>
 
 <script src="./js/bookgenres.js"></script>
