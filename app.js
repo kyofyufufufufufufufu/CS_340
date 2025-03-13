@@ -186,6 +186,23 @@ app.get('/search-book', function(req, res)
 
 });
 
+// CREATE books
+app.post('/add-book-ajax', (req, res) => {
+    let data = req.body;
+    let query = `INSERT INTO Books (bookTitle, bookDescription, bookPublishDate) VALUES (?, ?, ?)`;
+
+    db.pool.query(query, [data.bookTitle, data.bookDescription, data.bookPublishDate], (error, rows) => {
+        if (error) {
+            console.log(error);
+            return res.sendStatus(400);
+        }
+        db.pool.query("SELECT * FROM Books;", (error, rows) => {
+            if (error) return res.sendStatus(400);
+            res.json({ success: true, books: rows });
+        });
+    });
+});
+
 //UPDATE/EDIT Books
 app.post('/edit-book-ajax', (req, res) => {
     const { bookID, bookTitle, bookDescription, bookPublishDate } = req.body;
