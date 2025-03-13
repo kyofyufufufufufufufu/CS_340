@@ -372,9 +372,12 @@ app.get('/userbooks', function(req, res) {
 app.post('/add-userbook-ajax', function(req, res) {
     const { userID, bookID, userBookStatus, userBookRating } = req.body;
 
+    // Convert empty rating to null
+    const rating = userBookRating === "" ? null : userBookRating;
+
     const query = "INSERT INTO UserBooks (userID, bookID, userBookStatus, userBookRating) VALUES (?, ?, ?, ?)";
 
-    db.pool.query(query, [userID, bookID, userBookStatus, userBookRating], function(error, results) {
+    db.pool.query(query, [userID, bookID, userBookStatus, rating], function(error, results) {
         if (error) {
             console.log(error);
             return res.sendStatus(400);

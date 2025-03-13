@@ -23,27 +23,32 @@ $(document).ready(function() {
 
 // Add new user
 $('#add-userbook-form').submit(function(event) {
-  event.preventDefault();
-
-  const formData = $(this).serializeArray();
-  const data = {};
-  formData.forEach(item => {
-      data[item.name] = item.value;
-  });
-
-  $.ajax({
-      url: '/add-userbook-ajax',
-      type: 'POST',
-      data: data,
-      success: function(response) {
-          if (response.success) {
-              location.reload();  // Reload the page to fetch updated data
-          }
-      },
-      error: function() {
-          alert("Error adding userbook");
-      }
-  });
+    event.preventDefault();
+  
+    const formData = $(this).serializeArray();
+    const data = {};
+    formData.forEach(item => {
+        data[item.name] = item.value;
+    });
+  
+    // Convert empty rating to null
+    if (data.userBookRating === "") {
+      data.userBookRating = null;
+    }
+  
+    $.ajax({
+        url: '/add-userbook-ajax',
+        type: 'POST',
+        data: data,
+        success: function(response) {
+            if (response.success) {
+                location.reload();  // Reload the page to fetch updated data
+            }
+        },
+        error: function() {
+            alert("Error adding userbook");
+        }
+    });
 });
 
 // Handle opening the edit modal and pre-filling data
@@ -79,31 +84,36 @@ function editUserBook(userBookID, userID, bookID, status, rating) {
 
 // Editing existing user
 $('#edit-userbook-form').submit(function(event) {
-  event.preventDefault();
-
-  let userBookID = $('#editUserBookID').val();
-  let userID = $('#editUser').val();
-  let bookID = $('#editBook').val();
-  let status = $('#editStatus').val();
-  let rating = $('#editRating').val();
-
-  let data = { userBookID, userID, bookID, userBookStatus: status, userBookRating: rating };
-
-  $.ajax({
-      url: '/edit-userbook-ajax',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(data),
-      success: function(response) {
-          if (response.success) {
-              location.reload(); // Reload to reflect changes
-          }
-      },
-      error: function() {
-          alert("Error updating userbook");
-      }
+    event.preventDefault();
+  
+    let userBookID = $('#editUserBookID').val();
+    let userID = $('#editUser').val();
+    let bookID = $('#editBook').val();
+    let status = $('#editStatus').val();
+    let rating = $('#editRating').val();
+  
+    // Convert empty string to null
+    rating = rating === "" ? null : rating;
+  
+    let data = { userBookID, userID, bookID, userBookStatus: status, userBookRating: rating };
+  
+    $.ajax({
+        url: '/edit-userbook-ajax',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(response) {
+            if (response.success) {
+                location.reload(); // Reload to reflect changes
+            } else {
+                alert("Error: " + (response.message || "Failed to update"));
+            }
+        },
+        error: function() {
+            alert("Error updating userbook");
+        }
+    });
   });
-});
 
 // Close edit modal when cancel button is clicked
 document.getElementById("closeEditForm").addEventListener("click", function () {
