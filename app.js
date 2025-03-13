@@ -7,7 +7,7 @@ const app     = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-PORT = 8764;
+PORT = 8761;
 
 // Database
 const db      = require('./database/db-connector')
@@ -141,28 +141,24 @@ app.delete('/delete-user-ajax/', function(req,res,next) {
 });
 
 app.get('/books', function(req, res) {  
-        let query1 = "SELECT * FROM Books;";                    // Define our query
+    let query1 = "SELECT * FROM Books;";  // Define our query
 
-        db.pool.query(query1, function(error, rows, fields){    // Execute the query
-
-            res.render('books', {data: rows});                  // Render the index.hbs file, and also send the renderer
-        })                                                      // an object where 'data' is equal to the 'rows' we
-});
-
-// CREATE books
-app.post('/add-book-ajax', (req, res) => {
-    let data = req.body;
-    let query = `INSERT INTO Books (bookTitle, bookDescription, bookPublishDate) VALUES (?, ?, ?)`;
-
-    db.pool.query(query, [data.bookTitle, data.bookDescription, data.bookPublishDate], (error, rows) => {
+    db.pool.query(query1, function(error, rows, fields){  // Execute the query
         if (error) {
-            console.log(error);
-            return res.sendStatus(400);
+            console.error(error);
+            res.status(500).send("Database query error");
+            return;
         }
-        db.pool.query("SELECT * FROM Books;", (error, rows) => {
-            if (error) return res.sendStatus(400);
-            res.json({ success: true, books: rows });
+
+        // Convert the publish date format for each book
+        rows.forEach(book => {
+            if (book.bookPublishDate) {
+                let date = new Date(book.bookPublishDate);
+                book.bookPublishDate = date.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            }
         });
+
+        res.render('books', { data: rows });  // Render the page with formatted dates
     });
 });
 
