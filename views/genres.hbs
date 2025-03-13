@@ -1,35 +1,62 @@
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <h1>Genre Data</h1>
 
-<form action="/add-genre" method="POST">
+<!-- Add Genre Form -->
+<form id="add-genre-form">
     <label for="genreName">Genre Name:</label>
     <input type="text" id="genreName" name="genreName" required>
-
     <button type="submit">Add Genre</button>
 </form>
 
-<hr>
+<form id="search-genre" method="GET" action="/search-genre">
+    <label for="input-genreName">Search by Genre Name</label>
+    <input type="text" name="genreName" id="input-genreName-html">
+
+    <input type="submit" value="Search">
+    <a href="/"><button>Reset</button></a>
+</form>
 
 <!-- Genres Table -->
 <h2>Genres List</h2>
 <table id="genres_table">
   <thead>
     <tr>
-      {{!-- <th><input type="checkbox" id="select-all" /></th> --}}
       <th>ID</th>
       <th>Genre Category</th>
-      <th>Delete</th>
+      <th>Actions</th>
     </tr>
   </thead>
+
   <tbody>
     {{#each data}}
-      <tr>
-        {{!-- <td><input type="checkbox" class="select-row" /></td> --}}
+    <tr data-value="{{this.genreID}}">
         <td>{{this.genreID}}</td>
-        <td>{{this.genreName}}</td>
-        <td><button
-                  onclick="deleteUser({{this.genreID}})"
-                  >Delete</button></td>
-      </tr>
+        <td class="genre-name">{{this.genreName}}</td>
+        <td>
+            <button onclick="editGenre({{this.genreID}})">Edit</button>
+            <button onclick="deleteGenre({{this.genreID}})">Delete</button>
+        </td>
+    </tr>
     {{/each}}
   </tbody>
 </table>
+
+<!-- Modals -->
+
+<!-- Modal for Editing Genre -->
+<dialog id="createGenreForm">
+  <form id="edit-genre-form">
+    <legend>Edit Genre</legend>
+    <fieldset>
+      <label for="editGenreName">Genre:</label>
+      <input type="text" id="editGenreName" name="editGenreName" required>
+    </fieldset>
+    <div class="formButtons">
+      <input type="submit" value="Update">
+      <button type="button" id="closeForm">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="./js/genres.js"></script>

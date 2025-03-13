@@ -2,46 +2,55 @@
 
 <h1>User Data</h1>
 
-<!-- Button to open the modal -->
+<!-- Button to open the modal for creating a new user -->
 <section class="user_buttons">
     <button id="createUserBtn">Create New User</button>
-    <button id="editUserBtn">Edit Existing User</button>
 </section>
 
 <div class="form-spacing"></div>
 
 <!-- Search Form -->
-<form action="/search-user" method="POST">
-    <input type="text" id="userName" name="userName" required>
-    <button type="submit">Search</button>
+<form id="search-user" method="GET" action="/search-user">
+    <label for="input-userName">Search by Username</label>
+    <input type="text" name="userName" id="input-userName-html">
+
+    <input type="submit" value="Search">
+    <a href="/"><button>Reset</button></a>
 </form>
 
 <div class="form-spacing"></div>
 
-<!-- Table for displaying users -->
 <h2>Users List</h2>
-<table id="user_table">
+<table id="users_table">
   <thead>
     <tr>
-      <th><input type="checkbox" id="select-all" /></th>
       <th>ID</th>
       <th>Username</th>
       <th>Password</th>
       <th>Email</th>
-      <th>Delete</th>
+      <th>Actions</th>
     </tr>
   </thead>
   <tbody>
     {{#each data}}
-        <tr data-value="{{this.userID}}">
+    <tr data-value="{{this.userID}}">
         <td>{{this.userID}}</td>
         <td>{{this.userName}}</td>
         <td>{{this.password}}</td>
         <td>{{this.email}}</td>
-        <td><button
-                onclick="deleteUser({{this.userID}})"
-                >Delete</button></td>
-        </tr>
+        <td>
+          <button 
+            onclick="editUser({{this.userID}}, '{{this.userName}}', '{{this.password}}', '{{this.email}}')"
+          >
+            Edit
+          </button>
+          <button
+            onclick="deleteUser({{this.userID}})"
+          >
+            Delete
+          </button>
+        </td>
+    </tr>
     {{/each}}
   </tbody>
 </table>
@@ -63,7 +72,7 @@
             <input type="email" id="input-email" name="input-email" required>
         </fieldset>
         <div class="formButtons">
-            <input type="submit">
+            <input type="submit" value="Create">
             <button type="button" id="closeForm">Cancel</button>
         </div>
     </form>
@@ -71,13 +80,14 @@
 
 <!-- Edit User Modal -->
 <dialog id="editUserForm">
-    <form action="/edit-user" method="POST">
+    <form>
         <legend>Edit Existing User</legend>
         <fieldset>
+            <!-- Hidden field for userID -->
             <input type="hidden" id="editUserId" name="userId">
             
             <label for="editUserName">Username:</label>
-            <input type="text" id="editUserName" name="userName" readonly>
+            <input type="text" id="editUserName" name="userName">
 
             <label for="editPassword">New Password:</label>
             <input type="password" id="editPassword" name="password">
@@ -86,25 +96,10 @@
             <input type="email" id="editEmail" name="email">
         </fieldset>
         <div class="formButtons">
-            <button type="button" id="closeForm">Cancel</button>
             <button type="submit">Update</button>
+            <button type="button" id="closeForm">Cancel</button>
         </div>
     </form>
 </dialog>
-
-<!-- Delete User Modal -->
-<!-- <dialog id="deleteUserForm">
-    <form action="/delete-user" method="POST">
-        <legend>Confirm Deletion</legend>
-        <p>Are you sure you want to delete user <strong id="deleteUserNameText"></strong>?</p>
-        
-        <input type="hidden" id="deleteUserId" name="userId">
-
-        <div class="formButtons">
-            <button type="button" id="closeForm">Cancel</button>
-            <button type="submit">Delete</button>
-        </div>
-    </form>
-</dialog> --}} -->
 
 <script src="/js/users.js"></script>
