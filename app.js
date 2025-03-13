@@ -7,13 +7,17 @@ const app     = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-PORT = 8763;
+PORT = 8764;
 
 // Database
 const db      = require('./database/db-connector')
 
+const fs = require('fs');
+const path = require('path');
+
 const { engine } = require('express-handlebars');
 var exphbs = require('express-handlebars');     
+const { equal } = require('assert');
 app.engine('.hbs', engine({extname: ".hbs"}));  
 app.set('view engine', '.hbs');   
 
@@ -34,14 +38,38 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
 });
 
-app.get('/users', function(req, res) {  
-    let query1 = "SELECT * FROM Users;";                    // Define our query
+app.get('/search-user', function(req, res)
+{
+    let query1;
+    
+    if (req.query.userName === undefined)
+    {
+        query1 = "SELECT * FROM Users;";
+    }
 
-    db.pool.query(query1, function(error, rows, fields){    // Execute the query
+    else
+    {
+        query1 = `SELECT * FROM Users WHERE userName LIKE "${req.query.userName}%"`
+    }
 
-        res.render('users', {data: rows});                  // Render the index.hbs file, and also send the renderer
-    })                                                      // an object where 'data' is equal to the 'rows' we
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let user = rows;
+
+        return res.render('users', {data: user});
+
+    })
+
 });
+
+app.get('/users', function(req, res) {  
+        let query1 = "SELECT * FROM Users;";                    // Define our query
+
+        db.pool.query(query1, function(error, rows, fields){    // Execute the query
+
+            res.render('users', {data: rows});                  // Render the index.hbs file, and also send the renderer
+        })                                                      // an object where 'data' is equal to the 'rows' we
+});           
 
 app.post('/add-user-ajax', function(req, res) {
     let data = req.body;
@@ -68,7 +96,6 @@ app.post('/add-user-ajax', function(req, res) {
     });
 });
 
-
 app.post('/edit-user-ajax', function(req, res) {
     const { userID, userName, email, password } = req.body;
     console.log('Editing User:', req.body);
@@ -93,48 +120,34 @@ app.post('/edit-user-ajax', function(req, res) {
     });
 });
 
-
-
 app.delete('/delete-user-ajax/', function(req,res,next) {
-let data = req.body;
-let userID = parseInt(data.userID);
-let deleteUser = `DELETE FROM Users WHERE userID = ?`;
+    let data = req.body;
+    let userID = parseInt(data.userID);
+    let deleteUser = `DELETE FROM Users WHERE userID = ?`;
+    
+    // Run the 1st query
+    db.pool.query(deleteUser, [userID], function(error, rows, fields){
+        if (error) {
 
-// Run the 1st query
-db.pool.query(deleteUser, [userID], function(error, rows, fields){
-    if (error) {
-
-    // Bad request error log
-    console.log(error);
-    res.sendStatus(400);
-    }
-    else {
-    res.sendStatus(204);
-    }   
-})
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
+        console.log(error);
+        res.sendStatus(400);
+        }
+        else {
+        res.sendStatus(204);
+        }
+        
+    })
 });
 
 app.get('/books', function(req, res) {  
-    let query1 = "SELECT * FROM Books;";  // Define our query
+        let query1 = "SELECT * FROM Books;";                    // Define our query
 
-    db.pool.query(query1, function(error, rows, fields){  // Execute the query
-        if (error) {
-            console.log(error);
-            res.status(500).send('Database query error');
-            return;
-        }
+        db.pool.query(query1, function(error, rows, fields){    // Execute the query
 
-        // Format the date for each book
-        rows.forEach(book => {
-            let date = new Date(book.bookPublishDate); 
-            book.bookPublishDate = date.toISOString().split('T')[0];  // Format as YYYY-MM-DD
-        });
-
-        // Render books and date
-        res.render('books', { data: rows });
-    });                                                    
+            res.render('books', {data: rows});                  // Render the index.hbs file, and also send the renderer
+        })                                                      // an object where 'data' is equal to the 'rows' we
 });
-
 
 // CREATE books
 app.post('/add-book-ajax', (req, res) => {
@@ -151,6 +164,30 @@ app.post('/add-book-ajax', (req, res) => {
             res.json({ success: true, books: rows });
         });
     });
+});
+
+app.get('/search-book', function(req, res)
+{
+    let query1;
+    
+    if (req.query.bookTitle === undefined)
+    {
+        query1 = "SELECT * FROM Books;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Books WHERE bookTitle LIKE "${req.query.bookTitle}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let book = rows;
+
+        return res.render('books', {data: book});
+
+    })
+
 });
 
 //UPDATE/EDIT Books
@@ -187,7 +224,7 @@ app.delete('/delete-book-ajax/', function(req,res,next) {
     db.pool.query(deleteBook, [bookID], function(error, rows, fields) {
         if (error) {
 
-        // Bad request error
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
         console.log(error);
         res.sendStatus(400);
         }
@@ -204,7 +241,31 @@ app.get('/authors', function(req, res) {
     db.pool.query(query1, function(error, rows, fields){    // Execute the query
 
         res.render('authors', {data: rows});                  // Render the index.hbs file, and also send the renderer
-    })                                                      // an object where 'data' is equal to the 'rows'
+    })                                                      // an object where 'data' is equal to the 'rows' we
+});
+
+app.get('/search-author', function(req, res)
+{
+    let query1;
+    
+    if (req.query.authorName === undefined)
+    {
+        query1 = "SELECT * FROM Authors;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Authors WHERE authorName LIKE "${req.query.authorName}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let author = rows;
+
+        return res.render('authors', {data: author});
+
+    })
+
 });
 
 app.post('/add-author-ajax', (req, res) => {
@@ -215,7 +276,7 @@ app.post('/add-author-ajax', (req, res) => {
             console.log(error);
             return res.sendStatus(400);
         }
-        // Updated list of authors
+        // Send back the updated list of authors
         db.pool.query("SELECT * FROM Authors;", (error, rows) => {
             if (error) return res.sendStatus(400);
             res.json({ success: true, authors: rows });
@@ -255,7 +316,7 @@ app.delete('/delete-author-ajax/', function(req,res,next) {
     db.pool.query(deleteAuthor, [authorID], function(error, rows, fields){
         if (error) {
 
-        // Bad request error log
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
         console.log(error);
         res.sendStatus(400);
         }
@@ -271,8 +332,8 @@ app.get('/genres', function(req, res) {
 
     db.pool.query(query1, function(error, rows, fields){    // Execute the query
 
-        res.render('genres', {data: rows});                  // Render the index.hbs file
-    })                                                      
+        res.render('genres', {data: rows});                  // Render the index.hbs file, and also send the renderer
+    })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
 // ADD Genre
@@ -291,6 +352,30 @@ app.post('/add-genre-ajax', function(req, res) {
             res.json({ success: true, genres: rows });
         });
     });
+});
+
+app.get('/search-genre', function(req, res)
+{
+    let query1;
+    
+    if (req.query.genreName === undefined)
+    {
+        query1 = "SELECT * FROM Genres;";
+    }
+
+    else
+    {
+        query1 = `SELECT * FROM Genres WHERE genreName LIKE "${req.query.genreName}%"`
+    }
+
+    db.pool.query(query1, function(error, rows, fields) {
+
+        let genre = rows;
+
+        return res.render('genres', {data: genre});
+
+    })
+
 });
 
 // EDIT Genre
@@ -322,6 +407,7 @@ app.delete('/delete-genre-ajax/', function(req,res,next) {
     db.pool.query(deleteGenre, [genreID], function(error, rows, fields){
         if (error) {
 
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
         console.log(error);
         res.sendStatus(400);
         }
@@ -396,6 +482,7 @@ app.post('/add-userbook-ajax', function(req, res) {
     });
 });
 
+
 // EDIT/UPDATE UserBook
 app.post('/edit-userbook-ajax', function(req, res) {
     const { userBookID, userID, bookID, userBookStatus, userBookRating } = req.body;
@@ -421,15 +508,17 @@ app.post('/edit-userbook-ajax', function(req, res) {
     });
 });
 
+
 app.delete('/delete-userbook-ajax/', function(req,res,next) {
     let data = req.body;
     let userBookID = parseInt(data.userBookID);
     let deleteUserBook = `DELETE FROM UserBooks WHERE userBookID = ?`;
     
+    // Run the 1st query
     db.pool.query(deleteUserBook, [userBookID], function(error, rows, fields){
         if (error) {
 
-        // Log error -- send to HTTP 400 page
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
         console.log(error);
         res.sendStatus(400);
         }
@@ -509,6 +598,7 @@ app.post('/add-author-book-ajax', function(req, res) {
     });
 });
 
+
 // EDIT/UPDATE authorBooks
 app.post('/edit-author-book-ajax', function(req, res) {
     let data = req.body;
@@ -531,6 +621,8 @@ app.post('/edit-author-book-ajax', function(req, res) {
     });
 });
 
+
+
 app.delete('/delete-author-book-ajax', function(req,res,next) {
     let data = req.body;
     let authorBookID = parseInt(data.authorBookID);
@@ -540,12 +632,14 @@ app.delete('/delete-author-book-ajax', function(req,res,next) {
     db.pool.query(deleteAuthorBooks, [authorBookID], function(error, rows, fields){
         if (error) {
 
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
         console.log(error);
         res.sendStatus(400);
         }
         else {
         res.sendStatus(204);
         }
+        
     })
 });
 
@@ -633,6 +727,7 @@ app.delete('/delete-bookgenre-ajax/', function(req,res,next) {
     db.pool.query(deleteBookGenre, [genreBookID], function(error, rows, fields) {
         if (error) {
 
+        // Log the error to the terminal so we know what went wrong, and send the visitor an HTTP response 400 indicating it was a bad request.
         console.log(error);
         res.sendStatus(400);
         }
@@ -644,7 +739,7 @@ app.delete('/delete-bookgenre-ajax/', function(req,res,next) {
 });
 
 
-// Start server
+// Start the server
 app.listen(PORT, function (err) {
     if (err) throw err;
     console.log(`Server running on http://classwork.engr.oregonstate.edu:${PORT}`);

@@ -9,6 +9,14 @@
     <button type="submit">Add Genre</button>
 </form>
 
+<form id="search-genre" method="GET" action="/search-genre">
+    <label for="input-genreName">Search by Genre Name</label>
+    <input type="text" name="genreName" id="input-genreName-html">
+
+    <input type="submit" value="Search">
+    <a href="/"><button>Reset</button></a>
+</form>
+
 <!-- Genres Table -->
 <h2>Genres List</h2>
 <table id="genres_table">
