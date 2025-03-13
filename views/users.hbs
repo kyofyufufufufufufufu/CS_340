@@ -40,15 +40,9 @@
         <td>{{this.email}}</td>
         <td>
           <button 
-            onclick="editUser({{this.userID}}, '{{this.userName}}', '{{this.password}}', '{{this.email}}')"
-          >
-            Edit
-          </button>
+            onclick="editUser({{this.userID}}, '{{this.userName}}', '{{this.password}}', '{{this.email}}')">Edit</button>
           <button
-            onclick="deleteUser({{this.userID}})"
-          >
-            Delete
-          </button>
+            onclick="deleteUser({{this.userID}})">Delete</button>
         </td>
     </tr>
     {{/each}}
