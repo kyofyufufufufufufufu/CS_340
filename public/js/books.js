@@ -212,19 +212,9 @@ function deleteBook(bookID) {
         type: 'DELETE',
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
-        success: function(result) {
+        success: function() {
             deleteRow(bookID);
-        },
-        //Code source: https://stackoverflow.com/questions/1637019/how-to-get-the-jquery-ajax-error-response-text
-        error: function(xhr, status, error) {
-            if (xhr.status == 400) {
-                alert("Can't delete this book because it's referenced in userbooks.")
-            }
-            else {
-                alert("An error occured: " + error)
-            }
         }
-
     });
     }
 }
