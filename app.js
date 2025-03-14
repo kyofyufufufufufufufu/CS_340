@@ -1,4 +1,7 @@
-// Adapted from CS340 Nodejs Starter code: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main/Step%200%20-%20Setting%20Up%20Node.js
+//  Citation for app.js
+//  Date: 02/10/25
+//  Adapted from: NodeJS CS340 Starter Code
+//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
 
 // Create an Express app
 const express = require('express');                 // We are using the express library for the web server
