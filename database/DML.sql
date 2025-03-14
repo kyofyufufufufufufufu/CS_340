@@ -1,3 +1,5 @@
+-- Group 71: Krystal Lu, Annmarie Geiger
+-- Project Title: Book Tracking Management System
 
 --------------- Users ---------------
 -- Read - Get all users
