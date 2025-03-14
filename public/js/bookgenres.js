@@ -1,3 +1,9 @@
+//  Citation for bookgenres.js with the exception of the code in line 114 to open the modal to edit BookGenre.
+//  Date: 02/16/25
+//  Adapted from: NodeJS CS340 Starter Code
+//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
+
 // CRREATE genrebook
 document.getElementById("add-genrebook-form").addEventListener("submit", function (e) {
   e.preventDefault();
@@ -105,6 +111,7 @@ document.getElementById("edit-genrebook-form").addEventListener("submit", functi
   xhttp.send(JSON.stringify(data));
 });
 
+//Opens modal to edit book genre
 document.addEventListener("DOMContentLoaded", function() {
   const closeEditButton = document.getElementById("closeEditForm");
   if (closeEditButton) {

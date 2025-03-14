@@ -1,3 +1,8 @@
+//  Citation for userbooks.js with the exception of the code in line 60.
+//  Date: 02/16/25
+//  Adapted from: NodeJS CS340 Starter Code
+//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
 // Function to update rating options based on status selection
 $('#status, #editStatus').change(function() {
   let status = $(this).val();

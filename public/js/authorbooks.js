@@ -1,3 +1,9 @@
+//  Citation for authorbooks.js with the exception of the code in line 95 to open the modal to edit AuthorBook.
+//  Date: 02/16/25
+//  Adapted from: NodeJS CS340 Starter Code
+//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
+
 //  CREATE AuthorBook function
 document.getElementById("add-author-book-form-ajax").addEventListener("submit", function (e) {
     e.preventDefault();

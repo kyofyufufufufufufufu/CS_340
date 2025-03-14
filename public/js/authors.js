@@ -1,4 +1,7 @@
-//{{!-- Code adapted from: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main --}}
+//  Citation for authors.js with the exception of the DOM to get modal (line 6).
+//  Date: 02/16/25
+//  Adapted from: NodeJS CS340 Starter Code
+//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
 
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons

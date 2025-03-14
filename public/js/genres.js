@@ -1,3 +1,9 @@
+//  Citation for genres.js with the exception of the code in line 160 to open the modal to edit Genre.
+//  Date: 02/16/25
+//  Adapted from: NodeJS CS340 Starter Code
+//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
+
 document.addEventListener("DOMContentLoaded", function () {
     const addGenreForm = document.getElementById("add-genre-form");
     addGenreForm.addEventListener("submit", function (e) {
@@ -150,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const row = document.querySelector(`tr[data-value="${genreID}"]`);
     const genreName = row.querySelector("td:nth-child(2)").innerText;
     
+    //Get modal to edit genre
     const editModal = document.getElementById("createGenreForm");
     editModal.showModal();
     
