@@ -1,3 +1,8 @@
+//Citation for books.js with the exception for the creation of the modal.
+//Date: 02/16/25
+//Adapted from: NodeJS CS340 Starter Code
+//Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons
     const createBooksBtn = document.getElementById("createBooksBtn");
@@ -67,7 +72,10 @@ addBookForm.addEventListener("submit", function (e) {
                     inputBookTitle.value = '';
                     inputBookDescription.value = '';
                     inputBookPublishDate.value = '';
-
+                    
+                    //Copied from: https://developer.mozilla.org/en-US/docs/Web/API/Location/reload
+                    location.reload() //Reload page so new data is styled
+                    
                     // Close the modal
                     document.getElementById("createBookForm").close();
                 } else {
