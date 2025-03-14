@@ -1,7 +1,30 @@
-//  Citation for authors.js with the exception of the DOM to get modal (line 6).
-//  Date: 02/16/25
-//  Adapted from: NodeJS CS340 Starter Code
-//  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
+/*
+Citation for users.js with the exception of the DOM to get modal (line 6).
+Date: 02/16/25
+Adapted from: NodeJS CS340 Starter Code
+Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
+
+AJAX/HTTP Requests
+02/22/2025
+Based on: jQuery.ajax()
+Source URL: https://api.jquery.com/jQuery.ajax/
+
+AJAX/jQuery API Documentation
+02/22/2025
+Based on: Category: Ajax
+Source URL: https://api.jquery.com/category/ajax/
+
+Innertext usage
+02/22/2025
+Based on: HTMLElement: innerText property
+Source URL: https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/innerText
+
+Reloading page (so reloading page won't be necessary)
+03/07/2025
+Based on: XML HttpRequest
+Source URL: https://www.w3schools.com/xml/xml_http.asp
+*/
 
 document.addEventListener("DOMContentLoaded", function () {
     // Get buttons

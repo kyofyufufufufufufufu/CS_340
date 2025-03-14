@@ -10,7 +10,7 @@ const app     = express();
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 app.use(express.static('public'))
-PORT = 8763;
+PORT = 8760;
 
 // Database
 const db      = require('./database/db-connector')
@@ -25,6 +25,9 @@ app.engine('.hbs', engine({extname: ".hbs"}));
 app.set('view engine', '.hbs');   
 
 // Register custom Handlebars helpers
+//02/09/2025
+//Based on: express-handlebars by Tony Brix (Github)
+//Source URL: https://github.com/express-handlebars/express-handlebars
 const hbs = exphbs.create({});
 hbs.handlebars.registerHelper('isEqual', function (a, b, options) {
     if (!options || !options.fn) return ''; 
