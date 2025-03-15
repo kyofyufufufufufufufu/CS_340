@@ -101,7 +101,7 @@ addAuthorForm.addEventListener("submit", function (e) {
 });
 
 function deleteAuthor(authorID) {
-// Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
+// Window Confirm - Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
     if (window.confirm("Are you sure you want to delete this Author from the database?")) {
         let link = '/delete-author-ajax/';
         let data = {
