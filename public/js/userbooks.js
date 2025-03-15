@@ -1,6 +1,6 @@
 
 /*
-Citation for userbooks.js with the exception of handling the modal.
+Citation for userbooks.js with the exception of handling the modal, prefilled inputs (edit), and rating based on status selection.
 Date: 02/16/25 - 03/14/25
 Adapted from: NodeJS CS340 Starter Code
 Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
