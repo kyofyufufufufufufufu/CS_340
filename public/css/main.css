@@ -219,9 +219,12 @@ table {
 	
 	& thead th, & tbody td {
 		padding: var(--sPad);
-		padding-right: 0;
 		padding: 1em;
 	}
+}
+
+.books_action {
+	white-space: nowrap;
 }
 
 .form-spacing {
