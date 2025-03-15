@@ -1,5 +1,5 @@
 //  Citation for app.js
-//  Date: 02/10/25
+//  Date: 02/09/25
 //  Adapted from: NodeJS CS340 Starter Code
 //  Source URL: https://github.com/osu-cs340-ecampus/nodejs-starter-app/tree/main
 
@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
 });
 
+// Searchs for user by username
 app.get('/search-user', function(req, res)
 {
     let query1;
@@ -65,6 +66,7 @@ app.get('/search-user', function(req, res)
 
 });
 
+// READ Users entity
 app.get('/users', function(req, res) {  
         let query1 = "SELECT * FROM Users;";                    // Define our query
 
@@ -74,6 +76,7 @@ app.get('/users', function(req, res) {
         })                                                      // an object where 'data' is equal to the 'rows' we
 });           
 
+// CREATE a User
 app.post('/add-user-ajax', function(req, res) {
     let data = req.body;
 
@@ -99,6 +102,7 @@ app.post('/add-user-ajax', function(req, res) {
     });
 });
 
+// EDIT a User
 app.post('/edit-user-ajax', function(req, res) {
     const { userID, userName, email, password } = req.body;
     console.log('Editing User:', req.body);
@@ -123,6 +127,7 @@ app.post('/edit-user-ajax', function(req, res) {
     });
 });
 
+// DELETE a User
 app.delete('/delete-user-ajax/', function(req,res,next) {
     let data = req.body;
     let userID = parseInt(data.userID);
@@ -143,6 +148,7 @@ app.delete('/delete-user-ajax/', function(req,res,next) {
     })
 });
 
+// READ Books entity
 app.get('/books', function(req, res) {  
     let query1 = "SELECT * FROM Books;";  // Define our query
 
@@ -189,7 +195,7 @@ app.get('/search-book', function(req, res)
 
 });
 
-// CREATE books
+// CREATE a book entry
 app.post('/add-book-ajax', (req, res) => {
     let data = req.body;
     let query = `INSERT INTO Books (bookTitle, bookDescription, bookPublishDate) VALUES (?, ?, ?)`;
@@ -206,7 +212,7 @@ app.post('/add-book-ajax', (req, res) => {
     });
 });
 
-//UPDATE/EDIT Books
+//UPDATE/EDIT a Book entry
 app.post('/edit-book-ajax', (req, res) => {
     const { bookID, bookTitle, bookDescription, bookPublishDate } = req.body;
     
@@ -231,6 +237,7 @@ app.post('/edit-book-ajax', (req, res) => {
     });
 });
 
+// DELETE a book entry
 app.delete('/delete-book-ajax/', function(req,res,next) {
     let data = req.body;
     let bookID = parseInt(data.bookID);
@@ -251,6 +258,7 @@ app.delete('/delete-book-ajax/', function(req,res,next) {
     })
 });
 
+// READ Authors entity
 app.get('/authors', function(req, res) {  
     let query1 = "SELECT * FROM Authors;";                    // Define our query
 
@@ -260,6 +268,7 @@ app.get('/authors', function(req, res) {
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
+// Search for an author by author name
 app.get('/search-author', function(req, res)
 {
     let query1;
@@ -284,6 +293,7 @@ app.get('/search-author', function(req, res)
 
 });
 
+// CREATE an author entry
 app.post('/add-author-ajax', (req, res) => {
     let data = req.body;
     let query = `INSERT INTO Authors (authorName) VALUES (?)`;
@@ -300,7 +310,7 @@ app.post('/add-author-ajax', (req, res) => {
     });
 });
 
-//UPDATE/EDIT Authors
+//UPDATE/EDIT an Author entry
 app.post('/edit-author-ajax', (req, res) => {
     const { authorID, authorName } = req.body;
     
@@ -322,7 +332,7 @@ app.post('/edit-author-ajax', (req, res) => {
     });
 });
 
-
+// DELETE an Author entry
 app.delete('/delete-author-ajax/', function(req,res,next) {
     let data = req.body;
     let authorID = parseInt(data.authorID);
@@ -343,6 +353,7 @@ app.delete('/delete-author-ajax/', function(req,res,next) {
     })
 });
 
+// READ Genres entity
 app.get('/genres', function(req, res) {  
     let query1 = "SELECT * FROM Genres;";                    // Define our query
 
@@ -352,7 +363,7 @@ app.get('/genres', function(req, res) {
     })                                                      // an object where 'data' is equal to the 'rows' we
 });
 
-// ADD Genre
+// ADD a Genre entry
 app.post('/add-genre-ajax', function(req, res) {
     let data = req.body;
     let query = "INSERT INTO Genres (genreName) VALUES (?)";
@@ -370,6 +381,7 @@ app.post('/add-genre-ajax', function(req, res) {
     });
 });
 
+// Search for a genre by genre name
 app.get('/search-genre', function(req, res)
 {
     let query1;
@@ -394,7 +406,7 @@ app.get('/search-genre', function(req, res)
 
 });
 
-// EDIT Genre
+// EDIT a Genre entry
 app.post('/edit-genre-ajax', function(req, res) {
     const { genreID, genreName } = req.body;
     console.log('Editing Genre:', req.body);
@@ -414,6 +426,7 @@ app.post('/edit-genre-ajax', function(req, res) {
     });
 });
 
+// DELETE a genre entry
 app.delete('/delete-genre-ajax/', function(req,res,next) {
     let data = req.body;
     let genreID = parseInt(data.genreID);
@@ -434,6 +447,7 @@ app.delete('/delete-genre-ajax/', function(req,res,next) {
     })
 });
 
+// READ UserBooks entity
 app.get('/userbooks', function(req, res) {  
     let query = `
         SELECT UserBooks.userBookID, 
@@ -470,7 +484,7 @@ app.get('/userbooks', function(req, res) {
     });
 });
 
-// CREATE UserBook
+// CREATE a UserBook entry
 app.post('/add-userbook-ajax', function(req, res) {
     const { userID, bookID, userBookStatus, userBookRating } = req.body;
 
@@ -499,7 +513,7 @@ app.post('/add-userbook-ajax', function(req, res) {
 });
 
 
-// EDIT/UPDATE UserBook
+// EDIT/UPDATE a UserBook entry
 app.post('/edit-userbook-ajax', function(req, res) {
     const { userBookID, userID, bookID, userBookStatus, userBookRating } = req.body;
 
@@ -524,7 +538,7 @@ app.post('/edit-userbook-ajax', function(req, res) {
     });
 });
 
-
+// DELETE a UserBooks entry
 app.delete('/delete-userbook-ajax/', function(req,res,next) {
     let data = req.body;
     let userBookID = parseInt(data.userBookID);
@@ -545,6 +559,7 @@ app.delete('/delete-userbook-ajax/', function(req,res,next) {
     })
 });
 
+// READ authorbooks (AuthorsofBooks entity)
 app.get('/authorbooks', function(req, res) {  
     let query = `
         SELECT AuthorsofBooks.authorBookID, 
@@ -578,6 +593,7 @@ app.get('/authorbooks', function(req, res) {
     });
 });
 
+// CREATE authorbooks entry (AuthorsofBooks entity)
 app.post('/add-author-book-ajax', function(req, res) {
     let data = req.body;
 
@@ -615,7 +631,7 @@ app.post('/add-author-book-ajax', function(req, res) {
 });
 
 
-// EDIT/UPDATE authorBooks
+// EDIT/UPDATE authorBooks entry (AuthorsofBooks entity)
 app.post('/edit-author-book-ajax', function(req, res) {
     let data = req.body;
 
@@ -638,7 +654,7 @@ app.post('/edit-author-book-ajax', function(req, res) {
 });
 
 
-
+// DELETE authorbooks entry (AuthorsofBooks entity)
 app.delete('/delete-author-book-ajax', function(req,res,next) {
     let data = req.body;
     let authorBookID = parseInt(data.authorBookID);
@@ -659,6 +675,7 @@ app.delete('/delete-author-book-ajax', function(req,res,next) {
     })
 });
 
+// READ bookgenres (GenresofBooks entity)
 app.get('/bookgenres', function(req, res) {  
     let query1 = `
         SELECT GenresofBooks.genreBookID, 
@@ -702,7 +719,7 @@ app.get('/bookgenres', function(req, res) {
     });
 });
 
-// CREATE Book-Genre Relationship
+// CREATE Book-Genre Relationship (GenresofBooks entity)
 app.post('/add-bookgenre-ajax', function (req, res) {
     let { bookID, genreID } = req.body;
     
@@ -720,7 +737,7 @@ app.post('/add-bookgenre-ajax', function (req, res) {
     });
 });
 
-// EDIT/UPDATE bookGenres
+// EDIT/UPDATE bookGenres (GenresofBooks entity)
 app.post('/edit-bookgenre-ajax', function (req, res) {
     let { genreBookID, bookID, genreID } = req.body;
     
@@ -734,6 +751,7 @@ app.post('/edit-bookgenre-ajax', function (req, res) {
     });
 });
 
+// DELETE bookGenres (GenresofBooks entity)
 app.delete('/delete-bookgenre-ajax/', function(req,res,next) {
     let data = req.body;
     let genreBookID = parseInt(data.genreBookID);
