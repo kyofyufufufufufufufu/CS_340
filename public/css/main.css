@@ -1,5 +1,6 @@
 /* All code original*/
 
+/* Variable of colors */
 :root {
 	--accent: #4C6B6C;
 	--lGray: #fafafa;
@@ -22,6 +23,7 @@ body {
     color: var(--dGray);
 }
 
+/* Styling of navigation */
 nav {
 	display: flex;
 	flex-wrap: wrap;
@@ -37,6 +39,7 @@ nav {
 	border-bottom: 3px solid var(--mGray);
 }
 
+/* Styling the navigation links */
 .nav_links a {
 	height: 100%;
     padding: 8px 15px;
@@ -189,6 +192,7 @@ main h2 {
 	color: var(--accent);
 }
 
+/* Data table styling */
 table {
 	width: 100%;
 	border-collapse: collapse;
