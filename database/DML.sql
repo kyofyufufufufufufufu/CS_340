@@ -1,3 +1,13 @@
+-- Citation for DML.sql
+-- Date: 02/11/25
+-- Adapted from: Exploration - Database Application Design
+-- Source URL: https://canvas.oregonstate.edu/courses/1987790/pages/exploration-database-application-design?module_item_id=25023009
+
+-- Citation for DML.sql
+-- Date: 02/11/25
+-- Adapted from: Canvas - sample_data_manipulation_queries.sql
+-- Source URL: https://canvas.oregonstate.edu/courses/1987790/files/108859857?wrap=1
+
 -- Group 71: Krystal Lu, Annmarie Geiger
 -- Project Title: Book Tracking Management System
 

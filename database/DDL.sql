@@ -1,3 +1,8 @@
+-- Citation for DDL.sql
+-- Date: 02/03/25
+-- Adapted from: Activity 3 - Creating Transaction and Category Tables
+-- Source URL: https://canvas.oregonstate.edu/courses/1987790/pages/activity-3-creating-transaction-and-category-tables?module_item_id=25022977
+
 -- Group 71: Krystal Lu, Annmarie Geiger
 -- Project Title: Book Tracking Management System
 
