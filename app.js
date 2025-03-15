@@ -15,9 +15,6 @@ PORT = 8763;
 // Database
 const db      = require('./database/db-connector')
 
-const fs = require('fs');
-const path = require('path');
-
 const { engine } = require('express-handlebars');
 var exphbs = require('express-handlebars');     
 const { equal } = require('assert');
