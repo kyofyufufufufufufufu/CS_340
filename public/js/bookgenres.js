@@ -157,21 +157,24 @@ function updateRow(genreBookID, bookID, genreID) {
 }
 
 function deleteBookGenre(genreBookID) {
+  // Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
+  if (window.confirm("Are you sure you want to delete this BookGenre entry from the database?")) {
     let link = '/delete-bookgenre-ajax/';
     let data = {
         genreBookID: genreBookID
     };
-  
-    $.ajax({
-      url: link,
-      type: 'DELETE',
-      data: JSON.stringify(data),
-      contentType: "application/json; charset=utf-8",
-      success: function(result) {
-        deleteRow(genreBookID);
+    
+  $.ajax({
+    url: link,
+    type: 'DELETE',
+    data: JSON.stringify(data),
+    contentType: "application/json; charset=utf-8",
+    success: function(result) {
+      deleteRow(genreBookID);
       }
-    });
+  });
   }
+}
   
 function deleteRow(genreBookID){
     let table = document.getElementById("bookgenres_table");

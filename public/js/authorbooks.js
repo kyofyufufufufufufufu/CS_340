@@ -193,8 +193,10 @@ function updateRow(authorBookID, authorID, bookID) {
 
 // DELETE
 function deleteAuthorBook(authorBookID) {
-    let link = '/delete-author-book-ajax/';
-    let data = { authorBookID: authorBookID };
+    // Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
+    if (window.confirm("Are you sure you want to delete this AuthorBook entry from the database?")) {
+        let link = '/delete-author-book-ajax/';
+        let data = { authorBookID: authorBookID };
 
     $.ajax({
         url: link,
@@ -209,6 +211,7 @@ function deleteAuthorBook(authorBookID) {
             console.error("Error deleting author-book relationship.");
         }
     });
+    }
 }
 
 // Remove row after delete function

@@ -152,21 +152,24 @@ document.getElementById("closeEditForm").addEventListener("click", function () {
 
 // Handle deleting a UserBook (DELETE)
 function deleteUserBook(userBookID) {
-  let link = '/delete-userbook-ajax/';
-  let data = { userBookID: userBookID };
+    // Code adapted from: https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm
+    if (window.confirm("Are you sure you want to delete this UserBook entry from the database?")) {
+        let link = '/delete-userbook-ajax/';
+        let data = { userBookID: userBookID };
 
-  $.ajax({
-      url: link,
-      type: 'DELETE',
-      contentType: "application/json",
-      data: JSON.stringify(data),
-      success: function(result) {
-          deleteRow(userBookID);
-      },
-      error: function() {
-          alert("Error deleting userbook");
-      }
-  });
+    $.ajax({
+        url: link,
+        type: 'DELETE',
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function(result) {
+            deleteRow(userBookID);
+        },
+        error: function() {
+            alert("Error deleting userbook");
+        }
+    });
+    }
 }
 
 // Function to remove the table row after a successful delete
