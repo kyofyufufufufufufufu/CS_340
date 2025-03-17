@@ -52,6 +52,10 @@ nav {
     text-decoration: none;
 } 
 
+.nav_links {
+	margin-right: 7em;
+}
+
 
 #navSpace {
 	width: var(--bPad);
