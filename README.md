@@ -11,4 +11,4 @@ All code is based on the Node.js CS 340 starter code, with the exception of the 
     - UserBooks.js: Updating rating options based on status selection
     - Prefilling inputs when editing/updating data
 
-Cortonal and Curry, M.L. (February 2025) nodejs-starter-app [Source Code]. (https://github.com/osu-cs340-ecampus/nodejs-starter-app)
+Cortona1 and Curry, M.L. (February 2025) nodejs-starter-app [Source Code]. (https://github.com/osu-cs340-ecampus/nodejs-starter-app)
